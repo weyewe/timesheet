@@ -1,0 +1,22 @@
+
+
+
+/*FOR THE GRID*/
+.combo-name  {
+	font-weight : bold;
+	font-size : 11px;
+	background-color: #ffff99;
+}
+
+.combo-full-address { 
+	font-size : 11px;
+	color : #666666;
+}
+
+.x-grid-row .x-grid-cell-inner {
+    white-space: normal;
+}
+.x-grid-row-over .x-grid-cell-inner {
+/*    font-weight: bold;*/
+    white-space: normal;
+}

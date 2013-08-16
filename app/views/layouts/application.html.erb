@@ -1,0 +1,33 @@
+<html>
+<head> 
+		<title>TimeSheet</title>
+
+
+	  <%= stylesheet_link_tag 'http://cdn.sencha.io/ext-4.1.0-gpl/resources/css/ext-all.css', 'application'       %>
+
+
+		<% if Rails.env.production? %>
+			<%= javascript_include_tag "#{EXT_41_JS}",
+			 				# 'ux', 
+							"#{EXTENSIBLE}",
+		     			"application" %>
+		<% else %>
+			<%= javascript_include_tag  'ext-all-debug-w-comments', 
+												# 'ux',
+												 "#{EXTENSIBLE}", 
+		     								"application" %> 
+		<% end %> 
+		
+		<style>
+        .sample-ct {      
+            height: 500px;
+        }
+    </style>
+
+	  <%= csrf_meta_tag %>
+	  
+</head>
+<body>
+	<%= yield %>  
+</body>
+</html>

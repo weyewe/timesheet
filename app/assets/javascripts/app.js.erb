@@ -46,19 +46,54 @@ Ext.define("AM.view.Constants",{
 	GET_USERS_URL	:  "/users/all",
 	GET_USER_URL	: "/users/get",
 	
-	switchCalendar : 0,
-	switchBooking : 1 ,
-	switchReport : 2 , 
-	switchMaster : 3 
+	switchPersonalReport : 0,
+	switchWorkLog : 1 ,
+	switchMaster : 2 ,  
 });
 
-
-
+Ext.define("AM.currentUser",{
+	singleton	: true,
+	
+	LOGIN_URL	: "/login.do",
+	LOGOUT_URL	: "/logout.do",
+	
+	GET_USERS_URL	:  "/users/all",
+	GET_USER_URL	: "/users/get",
+	
+	
+	
+	hasRole : function(controller, action){
+		// console.log("Inside the hasRole");
+		var currentUser = Ext.decode( localStorage.getItem('currentUser'));
+		
+		if( !currentUser || !currentUser['role'] ){
+			return false; 
+		}
+		
+		if( 
+				(
+					currentUser['role']['system'] &&
+					currentUser['role']['system']['administrator']  
+				) || 
+				(
+						currentUser['role'][controller] && 
+						currentUser['role'][controller][action]  
+				) ){
+			
+			return true; 
+		}else{
+			return false; 
+		}
+		
+		
+	}
+});
 
 
 Ext.onReady(function(){
 	// console.log("ext onReady");
 	AM.view.Constants['moron'] = 'Awesome';
+	// console.log( AM.currentUser.hasRole('system', 'administrator') ) ;
 	// update the logo 
 	
 	// document.getElementById('logo-body').innerHTML = new Date().getDate();

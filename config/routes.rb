@@ -9,10 +9,13 @@ Timesheet::Application.routes.draw do
     
     get 'search_role' => 'roles#search', :as => :search_role
     get 'search_customers' => 'customers#search', :as => :search_customers
+    get 'search_projects' => 'projects#search', :as => :search_projects
+    get 'search_categories' => 'categories#search', :as => :search_categories
     
     resources :customers 
     resources :projects 
     resources :app_users
     resources :categories 
+    resources :works
   end
 end

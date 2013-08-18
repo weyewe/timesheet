@@ -61,7 +61,9 @@ Ext.define("AM.controller.Navigation", {
 		// console.log("The constant: " + btn.action );
 		// console.log("The activeItem: " + activeItem );
 		// console.log("The activeItem : " + activeItem);
-		me.getContent().layout.setActiveItem( AM.view.Constants[ btn.action ] )
+		me.getContent().layout.setActiveItem( AM.view.Constants[ btn.action ] );
+		// var activeItem = me.getContent().layout.getActiveItem();
+		// activeItem.fireEvent("cardActivated", activeItem);
 
 
 // 		no calendar over here

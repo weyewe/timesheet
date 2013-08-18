@@ -1,75 +1,119 @@
-Ext.define('AM.controller.Projects', {
+Ext.define('AM.controller.Works', {
   extend: 'Ext.app.Controller',
 
-  stores: ['Projects'],
-  models: ['Project'],
+  stores: ['Works'],
+  models: ['Work'],
 
   views: [
-    'master.project.List',
-    'master.project.Form'
+    'work.List',
+    'work.Form',
+		'Work'
   ],
 
   	refs: [
 		{
 			ref: 'list',
-			selector: 'projectlist'
+			selector: 'worklist'
 		},
 		{
 			ref : 'searchField',
-			selector: 'projectlist textfield[name=searchField]'
+			selector: 'worklist textfield[name=searchField]'
+		},
+		{
+			ref : 'workProcess',
+			selector : 'workProcess'
 		}
 	],
 
   init: function() {
     this.control({
-      'projectlist': {
+      'worklist': {
         itemdblclick: this.editObject,
         selectionchange: this.selectionChange,
-				afterrender : this.loadObjectList,
+				// enable : this.loadObjectList,
+				// afterrender : this.onAfterRender,
+				// activate : this.onActivated,
+				// enable : this.onEnabled,
+				// show : this.onShown,
+				afterLayout : this.onAfterLayout,
+				
       },
-      'projectform button[action=save]': {
+			'workProcess' : {
+				// 'cardActivated': this.loadObjectList,
+				activate : this.loadObjectList
+			},
+      'workform button[action=save]': {
         click: this.updateObject
       },
-      'projectlist button[action=addObject]': {
+      'worklist button[action=addObject]': {
         click: this.addObject
       },
-      'projectlist button[action=editObject]': {
+      'worklist button[action=editObject]': {
         click: this.editObject
       },
-      'projectlist button[action=deleteObject]': {
+      'worklist button[action=deleteObject]': {
         click: this.deleteObject
       },
-			'projectlist textfield[name=searchField]': {
+			'worklist textfield[name=searchField]': {
         change: this.liveSearch
       }
 		
     });
   },
 
+	onProcessActivated: function(){
+		console.log("on process activated");
+	},
+
+	onCardActivated: function(){
+		console.log("On card activated");
+	},
+
+	onAfterLayout: function(){
+		console.log("on after layout");
+	},
+
+	onShown: function(){
+		console.log("On Shown. ahahaha");
+	},
+
+	onEnabled: function(){
+		console.log("On enabled");
+	},
+	
+	onActivated: function(){
+		console.log("On ACTIVATED");
+	},
+
+	onAfterRender : function(){
+		console.log("On after render");
+	},
+
 	liveSearch : function(grid, newValue, oldValue, options){
 		var me = this;
 
-		me.getProjectsStore().getProxy().extraParams = {
+		me.getWorksStore().getProxy().extraParams = {
 		    livesearch: newValue
 		};
 	 
-		me.getProjectsStore().load();
+		me.getWorksStore().load();
 	},
  
 
-	loadObjectList : function(me){
-		me.getStore().load();
+	loadObjectList : function(activeItem){
+		activeItem.down("worklist").getStore().load();
+		// this.getStore().load();
 	},
 
   addObject: function() {
-    var view = Ext.widget('projectform');
+    var view = Ext.widget('workform');
     view.show();
   },
 
   editObject: function() {
 		var me = this; 
     var record = this.getList().getSelectedObject();
-    var view = Ext.widget('projectform');
+    var view = Ext.widget('workform');
 
 		
 
@@ -82,7 +126,7 @@ Ext.define('AM.controller.Projects', {
     var win = button.up('window');
     var form = win.down('form');
 
-    var store = this.getProjectsStore();
+    var store = this.getWorksStore();
     var record = form.getRecord();
     var values = form.getValues();
 
@@ -116,7 +160,7 @@ Ext.define('AM.controller.Projects', {
 		}else{
 			//  no record at all  => gonna create the new one 
 			var me  = this; 
-			var newObject = new AM.model.Project( values ) ;
+			var newObject = new AM.model.Work( values ) ;
 			
 			// learnt from here
 			// http://www.sencha.com/forum/showthread.php?137580-ExtJS-4-Sync-and-success-failure-processing
@@ -145,7 +189,7 @@ Ext.define('AM.controller.Projects', {
     var record = this.getList().getSelectedObject();
 
     if (record) {
-      var store = this.getProjectsStore();
+      var store = this.getWorksStore();
       store.remove(record);
       store.sync();
 // to do refresh programmatically

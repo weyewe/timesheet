@@ -20,8 +20,8 @@ Ext.define('AM.view.Content', {
 			},
 			{
 				// xtype : 'bookingProcessPanel'
-				xtype : "container",
-				html : "Create WorkLog"
+				xtype : "workProcess",
+				// html : "Create WorkLog"
 			},
 			{
 				// html : "Second",

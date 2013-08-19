@@ -97,9 +97,9 @@ Ext.define('AM.view.report.WorkProject', {
 			return chartConfig ; 
 		},
 		
-		buildIncomeList: function(){
+		buildList: function(){
 			var listConfig = {
-				xtype: 'workProjectReportList',
+				xtype: 'workprojectList',
 				flex : 2
 			}
 			return listConfig; 
@@ -164,12 +164,7 @@ Ext.define('AM.view.report.WorkProject', {
 					html : "Wait for the chart :)",
 					flex : 4
 				}, 
-				// me.buildIncomeList() ,
-				{
-					xtype : 'container',
-					html : "This is gonna be the list",
-					flex : 1
-				}
+				me.buildList()  
 			];
 			
 	    this.callParent(arguments);

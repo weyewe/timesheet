@@ -160,6 +160,7 @@ Ext.define('AM.view.report.WorkProject', {
 			
 	    this.items = [  {
 					xtype : 'container',
+					itemId : 'work_project_chart_container',
 					html : "Wait for the chart :)",
 					flex : 4
 				}, 

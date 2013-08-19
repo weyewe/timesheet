@@ -23,7 +23,8 @@ Ext.define('AM.view.MasterProcessPanel', {
 					},
 					items : [
 						{
-							html : "Ini adalah tampilan master. Anda dapat membuat master baru, atau menambah customer",
+							xtype: 'masterDefault'
+							 // : "Ini adalah tampilan master. Anda dapat membuat master baru, atau menambah customer",
 						}
 					]
       }

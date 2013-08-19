@@ -26,12 +26,23 @@ Ext.define("AM.controller.Master", {
 		 
 		me.control({
 			"masterProcessPanel" : {
-				activate : this.onActiveProtectedContent
+				activate : this.onActiveProtectedContent,
+				deactivate : this.onDeactivated
 			} 
 			
 		});
 		
 	},
+	
+	onDeactivated: function(){
+		// console.log("Master process panel is deactivated");
+		var worksheetPanel = Ext.ComponentQuery.query("masterProcessPanel #worksheetPanel")[0];
+		worksheetPanel.setTitle(false);
+		worksheetPanel.removeAll();		 
+		var defaultWorksheet = Ext.create( "AM.view.master.Default");
+		worksheetPanel.add(defaultWorksheet); 
+	},
+	
 	 
 
 	managementFolder : {

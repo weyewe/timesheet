@@ -20,15 +20,18 @@ Ext.define('AM.view.Content', {
 			// 	html : "Supposed to Personal Report"
 			// },
 			
+			// {
+			//     xtype: 'container',
+			//     autoEl: {},
+			//     title: 'Whatever',
+			//     layout: 'fit',
+			// 		id : 'am-chart-wrapper' ,
+			// 		// initComponent: function(){
+			// 		// 	console.log("INit component of the container");
+			// 		// }
+			// },
 			{
-			    xtype: 'container',
-			    autoEl: {},
-			    title: 'Whatever',
-			    layout: 'fit',
-					id : 'am-chart-wrapper' ,
-					// initComponent: function(){
-					// 	console.log("INit component of the container");
-					// }
+				xtype : 'personalreportProcess'
 			},
 			
 			

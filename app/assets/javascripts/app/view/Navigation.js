@@ -13,7 +13,7 @@ Ext.define('AM.view.Navigation', {
 					text : "Report",
 					action : "switchPersonalReport",
 					pressed : false, 
-					toggleGroup: this.id+'-nav-views'
+					toggleGroup: this.id+'-nav-views' 
 				}
 			)
 		},
@@ -28,7 +28,7 @@ Ext.define('AM.view.Navigation', {
 					text : "Work Log",
 					action : "switchWorkLog",
 					pressed : true,
-					toggleGroup: this.id+'-nav-views'
+					toggleGroup: this.id+'-nav-views' 
 				}
 			)
 		},
@@ -44,7 +44,7 @@ Ext.define('AM.view.Navigation', {
 					action : "switchMaster",
 					pressed : false,
 					toggleGroup: this.id+'-nav-views',
-					hidden : true 
+					hidden : true  
 				}
 			)
 		},

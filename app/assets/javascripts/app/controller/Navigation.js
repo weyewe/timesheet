@@ -28,7 +28,7 @@ Ext.define("AM.controller.Navigation", {
 		
 		// console.log("INSIDE init of Navigation.js");
 		me.control({  
-			'navigation	button' : {
+			'navigation	button[action=switchPersonalReport], navigation button[action=switchWorkLog], navigation button[action=switchMaster]' : {
 				click : me.switchScreen
 			},
 			

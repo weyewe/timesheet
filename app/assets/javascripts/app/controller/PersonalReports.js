@@ -30,6 +30,7 @@ Ext.define('AM.controller.PersonalReports', {
 		// console.log("personal report is activated");
 		var me = this;
 		var activeItem = me.getPersonalreportProcess();
+		console.log("on personal reprot activated");
 		
 		Ext.Ajax.request(
 			{
@@ -52,11 +53,7 @@ Ext.define('AM.controller.PersonalReports', {
 						alert('Exception ' + ex);
 					}
 
-				},
-				failure: function () {
-					alert('failure');
-
-				}
+				} 
 			});
 	},
  

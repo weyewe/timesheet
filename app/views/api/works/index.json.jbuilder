@@ -12,5 +12,6 @@ json.works @objects do |object|
 	json.project_title  object.project.title
 
 	json.duration object.duration
+	json.description object.description 
 	
 end

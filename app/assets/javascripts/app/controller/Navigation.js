@@ -62,23 +62,68 @@ Ext.define("AM.controller.Navigation", {
 		// console.log("The activeItem: " + activeItem );
 		// console.log("The activeItem : " + activeItem);
 		me.getContent().layout.setActiveItem( AM.view.Constants[ btn.action ] );
-		// var activeItem = me.getContent().layout.getActiveItem();
-		// activeItem.fireEvent("cardActivated", activeItem);
-
-
-// 		no calendar over here
-// 
-
-	//  if(btn.action ==='switchCalendar'){
-	// 	me.getViewport().fireEvent("loadCalendar");
-	// }
+	
 		
-		// if( btn.action === 'switchCalendar'){
-		// 	me.getContent().layout.setActiveItem(0)
-		// }else{
-		// 	console.log("It is the other thing");
-		// 	me.getContent().layout.setActiveItem(2 );
-		// }
+		if( btn.action === 'switchPersonalReport'){
+			// alert("Switching to personal report");
+			
+			var activeItem = me.getContent().layout.getActiveItem();
+			// Ext.get('am-chart-wrapper').load({
+			//             url : 'api/work_reports',
+			//             scripts: true,
+			//             text : 'Loading.. ',
+			// 						method : "GET"
+			//         });
+			
+			Ext.Ajax.request(
+			                {
+			                    url: "api/work_reports",
+													method : "GET",
+													// scripts : true, 
+			                    success: function (xhr) {
+			                        try {
+																		
+																	console.log("The xhr");
+																	console.log( xhr ) ;
+																	// var decoded_xhr = Ext.decode( xhr);
+																	// console.log( xhr ) 
+																	console.log("The responseText (string)");
+																	console.log( xhr.responseText );
+																	
+																	var decodedResponseText = Ext.decode( xhr.responseText );
+																	console.log("decoded response text");
+																	console.log( decodedResponseText );
+																	
+																	console.log("\n=== The component config");
+																	console.log( decodedResponseText['component_config']);
+																	var newComponent = Ext.Component.create( decodedResponseText['component_config']) ;
+																	console.log( "newComponent");
+																	console.log( newComponent ) ;
+																	
+																	
+																	
+			                            // var newComponent = eval(xhr.responseText);
+			                            //add the new component to panel or container
+																	// activeItem.add(newComponent);
+																	// console.log( activeItem );
+																	// console.log("The component Config");
+																	// console.log( xhr.responseText.component_config  )
+																	
+																	// console.log( activeItem.add ) ;
+																	activeItem.add(  newComponent );
+																	
+			                        }
+			                        catch (ex) {
+			                            alert('Exception ' + ex);
+			                        }
+
+			                    },
+			                    failure: function () {
+			                        alert('failure');
+
+			                    }
+			                });
+		}
 	}
 	 
 	   

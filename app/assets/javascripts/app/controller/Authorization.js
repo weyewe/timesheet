@@ -50,6 +50,9 @@ Ext.define("AM.controller.Authorization", {
 		if(	AM.currentUser.hasRole('system', 'administrator')	){
 			Ext.ComponentQuery.query("button[action=switchMaster]")[0].setVisible( true ) ;
 		} 
+		
+		// get the content.. set Active Item 1 
+		// this.getViewport().down('content').getLayout().setActiveItem(1);
 	},
 
 

@@ -35,7 +35,9 @@ class Api::WorksController < Api::BaseApiController
   def create
     # @object = Work.new(params[:work])
  
-    params[:work][:deadline_date] =  parse_date_from_client_booking( params[:work][:deadline_date] ) 
+    params[:work][:start_datetime] =  parse_datetime_from_client_booking( params[:work][:start_datetime] )
+    params[:work][:end_datetime] =  parse_datetime_from_client_booking( params[:work][:end_datetime] )
+    params[:work][:user_id]  = current_user.id 
     @object = Work.create_object( params[:work] )
     
     if @object.errors.size == 0 
@@ -47,8 +49,9 @@ class Api::WorksController < Api::BaseApiController
                         	:category_id 		=>		@object.category_id,
                         	:category_name	=>			@object.category.name,
                         	:project_id     =>   @object.project_id ,
-                        	:project_title   =>       @object.project.name,
-                        	:duration       =>    @object.duration
+                        	:project_title   =>       @object.project.title,
+                        	:duration       =>    @object.duration,
+                        	:description => @object.description
                         }] , 
                         :total => Work.active_objects.where(:user_id => current_user.id).count }  
     else
@@ -68,7 +71,10 @@ class Api::WorksController < Api::BaseApiController
 
   def update
     @object = Work.find(params[:id])
-    params[:work][:deadline_date] =  parse_date_from_client_booking( params[:work][:deadline_date] ) 
+    
+    params[:work][:start_datetime] =  parse_datetime_from_client_booking( params[:work][:start_datetime] )
+    params[:work][:end_datetime] =  parse_datetime_from_client_booking( params[:work][:end_datetime] )
+    params[:work][:user_id]  = current_user.id 
     
     
     puts "==========> \n"*10
@@ -86,8 +92,9 @@ class Api::WorksController < Api::BaseApiController
                           	:category_id 		=>		@object.category_id,
                           	:category_name	=>			@object.category.name,
                           	:project_id     =>   @object.project_id ,
-                          	:project_title   =>       @object.project.name,
-                          	:duration       =>    @object.duration
+                          	:project_title   =>       @object.project.title,
+                          	:duration       =>    @object.duration,
+                          	:description => @object.description
                           }],
                         :total => Work.active_objects.where(:user_id => current_user.id).count  } 
     else
@@ -150,5 +157,32 @@ class Api::WorksController < Api::BaseApiController
     end
     
     render :json => { :records => @objects , :total => @objects.count, :success => true }
+  end
+  
+  def reports
+    # render :json => { 
+    #     :store_config => {
+    #        fields: ['year', 'comedy', 'action', 'drama', 'thriller'],
+    #        data: [
+    #                {year: 2005, comedy: 34000000, action: 23890000, drama: 18450000, thriller: 20060000},
+    #                {year: 2006, comedy: 56703000, action: 38900000, drama: 12650000, thriller: 21000000},
+    #                {year: 2007, comedy: 42100000, action: 50410000, drama: 25780000, thriller: 23040000},
+    #                {year: 2008, comedy: 38910000, action: 56070000, drama: 24810000, thriller: 26940000}
+    #              ]
+    #     }  ,
+    #     :axes_fields => ['comedy', 'action', 'drama', 'thriller'],
+    #     :category_fields => ['year'],
+    #     :series_x_field => 'year',
+    #     :series_y_fields => ['comedy', 'action', 'drama', 'thriller'],
+    #     
+    # }
+    render :json => {
+      :component_config => {
+            :title  => 'Panel dynamically loaded',
+            :html => "Awesome shite",
+            :xtype  => 'panel'
+         }
+    }
+    return 
   end
 end

@@ -10,6 +10,7 @@ Ext.define('AM.model.Work', {
 			{ name: 'category_id', type: 'int' } ,
 			{ name: 'category_name', type: 'string' } ,
 			{ name: 'duration', type: 'int' } ,
+			{ name: 'description', type: 'string' } ,
   	],
 
 	 

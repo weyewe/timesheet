@@ -81,36 +81,8 @@ class User < ActiveRecord::Base
     return new_object
     
   end
-  
-  def User.create_by_employee( employee, params)
-    return nil if employee.nil? 
-    
-    admin_role = Role.find_by_name ROLE_NAME[:admin]
-    
-    new_object                        = User.new 
-    password                         = UUIDTools::UUID.timestamp_create.to_s[0..7]
-    new_object.name                  = params[:name]
-    new_object.email                 = params[:email] 
-    new_object.role_id               =   params[:role_id]
-    
-    new_object.password              = password
-    new_object.password_confirmation = password 
-    
-    new_object.save
-
-    
-     
-    
-    if new_object.valid? and Rails.env.production? 
-      UserMailer.notify_new_user_registration( new_object , password    ).deliver
-    end
-    return new_object 
-
-  end
-  
-  def update_by_employee( employee, params)
-    return nil if employee.nil? 
-      
+   
+  def update_object( params )
     admin_role = Role.find_by_name ROLE_NAME[:admin]
     
     self.name                  = params[:name]
@@ -124,8 +96,10 @@ class User < ActiveRecord::Base
     end 
     
     self.save
-    return self  
+    return self
   end
+  
+  
   
   def update_password(  params) 
     self.password = params[:password]

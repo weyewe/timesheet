@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 20130818151933) do
     t.datetime "start_datetime"
     t.datetime "end_datetime"
     t.integer  "duration"
+    t.text     "description"
     t.boolean  "is_deleted",     default: false
     t.datetime "created_at"
     t.datetime "updated_at"

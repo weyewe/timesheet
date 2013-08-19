@@ -29,18 +29,13 @@ Ext.define('AM.controller.Works', {
     this.control({
       'worklist': {
         itemdblclick: this.editObject,
-        selectionchange: this.selectionChange,
-				// enable : this.loadObjectList,
-				// afterrender : this.onAfterRender,
-				// activate : this.onActivated,
-				// enable : this.onEnabled,
-				// show : this.onShown,
-				afterLayout : this.onAfterLayout,
+        selectionchange: this.selectionChange, 
+				// afterrender : this.onAfterRender, 
 				
       },
 			'workProcess' : {
-				// 'cardActivated': this.loadObjectList,
-				activate : this.loadObjectList
+				activate : this.loadObjectList, 
+				// activate : this.onWorkProcessActivated
 			},
       'workform button[action=save]': {
         click: this.updateObject
@@ -60,35 +55,8 @@ Ext.define('AM.controller.Works', {
 		
     });
   },
-
-	onProcessActivated: function(){
-		console.log("on process activated");
-	},
-
-	onCardActivated: function(){
-		console.log("On card activated");
-	},
-
-	onAfterLayout: function(){
-		console.log("on after layout");
-	},
-
-	onShown: function(){
-		console.log("On Shown. ahahaha");
-	},
-
-	onEnabled: function(){
-		console.log("On enabled");
-	},
-	
-	onActivated: function(){
-		console.log("On ACTIVATED");
-	},
-
-	onAfterRender : function(){
-		console.log("On after render");
-	},
-
+ 
+ 
 	liveSearch : function(grid, newValue, oldValue, options){
 		var me = this;
 
@@ -101,6 +69,10 @@ Ext.define('AM.controller.Works', {
  
 
 	loadObjectList : function(activeItem){
+		// console.log("Wtf bro.. in the loadObjectList");
+		var date = new Date();
+		// console.log( date ) ;
+		// console.log( arguments ) ;
 		activeItem.down("worklist").getStore().load();
 		// this.getStore().load();
 	},

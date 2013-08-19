@@ -15,13 +15,13 @@ Ext.define('AM.view.work.List' ,{
 							'Work Category:<br /> <b>{category_name}</b>'   
 			},
 			
-			{ header: 'Description',  dataIndex: 'deadline_date',  flex: 1 , sortable: false} ,
+			{ header: 'Description',  dataIndex: 'description',  flex: 1 , sortable: false} ,
 			
 			{
 				xtype : 'templatecolumn',
 				text : "Duration",
 				flex : 1,
-				tpl : 'Start: <b>{start_datetime}</b>' + '<br />' + '<br />' +
+				tpl : 'Start:<br /> <b>{start_datetime}</b>' + '<br />' + '<br />' +
 							'End:<br /> <b>{end_datetime}</b>'  + '<br />' + '<br />' +
 							'Duration: <b>{duration}</b> mins' 
 			},

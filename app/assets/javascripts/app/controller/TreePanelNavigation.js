@@ -1,3 +1,8 @@
+/*
+	Control the masterProcessList.
+	
+	For the personal reporting, we want to extract script from the server and execute it. 
+*/
 Ext.define("AM.controller.TreePanelNavigation", {
 	extend : "Ext.app.Controller",
 	views : [
@@ -31,44 +36,21 @@ Ext.define("AM.controller.TreePanelNavigation", {
 	},
 	
 	onTreeRecordSelected : function( me, record, item, index, e ){
-		// console.log("onTreeRecordSelected. hahaha");
-		// console.log("the me: " ) ;
-		// console.log(me);
-		// console.log("The record:"  ) ;
-		// console.log( record ) ;
-		// console.log("The item: " );
-		// console.log( item ) ;
 		if (!record.isLeaf()) {
-		        return;
-		    }
-		
-		// console.log("The record");
-		// console.log( record ) ;
-		// console.log("the className: " + record.get('viewClass') );
+			return;
+		}
+
 		this.setActiveExample( record.get('viewClass'), record.get('text'));
 	},
+	
 	setActiveExample: function(className, title) {
-			// console.log("Gonna set active example");
-			
       var worksheetPanel = this.getWorksheetPanel();
       
-      // console.log("Gonna set title");
       worksheetPanel.setTitle(title);
-      
-      // console.log("gonna create the worksheet with className: "  +className );
-      worksheet = Ext.create(className);
-        
-			// if(worksheet){
-			// 	console.log( "worksheet presents");
-			// }else{
-			// 	console.log(" !!!!!!!!!!!!!!!! worksheet is not created");
-			// }
 
-			// console.log("Gonna remove all shite");
+      worksheet = Ext.create(className);
       worksheetPanel.removeAll();
-			// console.log("gonna add the newly created worksheet");
+
       worksheetPanel.add(worksheet);
-			// console.log("done adding worksheet");
- 
   }
 });

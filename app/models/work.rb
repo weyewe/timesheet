@@ -29,6 +29,9 @@ class Work < ActiveRecord::Base
     
     if start_datetime >= end_datetime
       self.errors.add(:start_datetime, "Harus lebih awal dari waktu selesai")
+      puts "\n===="*5
+      puts "The start_datetiem: #{self.start_datetime}"
+      puts "The end_datetime: #{self.end_datetime}"
     end
     
   end
@@ -43,13 +46,7 @@ class Work < ActiveRecord::Base
     self.save 
     
   end
-  # 
-  # def time_diff_in_minutes (time)
-  #   diff_seconds = (Time.now - time).round
-  #   diff_minutes = diff_seconds / 60
-  #   return diff_minutes
-  # end
-  
+ 
   def self.create_object( params )
     
     new_object = self.new 
@@ -58,6 +55,7 @@ class Work < ActiveRecord::Base
     new_object.description = params[:description] 
     new_object.start_datetime = params[:start_datetime]
     new_object.end_datetime = params[:end_datetime]
+    new_object.user_id = params[:user_id]
     
     
     if new_object.save 
@@ -72,6 +70,7 @@ class Work < ActiveRecord::Base
     self.description = params[:description] 
     self.start_datetime = params[:start_datetime]
     self.end_datetime = params[:end_datetime]
+    self.user_id = params[:user_id]
     
     if self.save 
       self.update_duration

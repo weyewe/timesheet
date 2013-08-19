@@ -12,7 +12,7 @@ class CreateWorks < ActiveRecord::Migration
       
       t.integer :duration  # in minutes 
       
-      
+      t.text :description
       
       
       t.boolean :is_deleted, :default => false 

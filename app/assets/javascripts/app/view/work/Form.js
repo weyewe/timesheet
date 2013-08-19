@@ -166,17 +166,17 @@ Ext.define('AM.view.work.Form', {
  
   },
 
-	setSelectedCustomer: function( customer_id ){
-		var comboBox = this.down('form').getForm().findField('customer_id'); 
+	setSelectedProject: function( project_id ){
+		var comboBox = this.down('form').getForm().findField('project_id'); 
 		var me = this; 
 		var store = comboBox.store; 
 		store.load({
 			params: {
-				selected_id : customer_id 
+				selected_id : project_id 
 			},
 			callback : function(records, options, success){
 				me.setLoading(false);
-				comboBox.setValue( customer_id );
+				comboBox.setValue( project_id );
 			}
 		});
 	},
@@ -197,6 +197,7 @@ Ext.define('AM.view.work.Form', {
 	},
 
 	setComboBoxData : function( record){
+		// console.log("Inside setComboBox data");
 		var me = this; 
 		me.setLoading(true);
 		

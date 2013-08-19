@@ -32,7 +32,7 @@ class Api::AppUsersController < Api::BaseApiController
   end
 
   def create
-    @object = User.create_by_employee(current_user,  params[:user] )  
+    @object = User.create_object(   params[:user] )  
     
     
  
@@ -60,7 +60,7 @@ class Api::AppUsersController < Api::BaseApiController
   def update
     
     @object = User.find_by_id params[:id] 
-    @object.update_by_employee(current_user,  params[:user])
+    @object.update_object(  params[:user])
      
     if @object.errors.size == 0 
       render :json => { :success => true,   

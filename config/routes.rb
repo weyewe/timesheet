@@ -12,10 +12,15 @@ Timesheet::Application.routes.draw do
     get 'search_projects' => 'projects#search', :as => :search_projects
     get 'search_categories' => 'categories#search', :as => :search_categories
     
+    
+    get 'work_reports' => 'works#reports', :as => :work_reports
+    
     resources :customers 
     resources :projects 
     resources :app_users
     resources :categories 
     resources :works
   end
+  
+  get 'work_reports' => 'works#reports', :as => :work_reports
 end

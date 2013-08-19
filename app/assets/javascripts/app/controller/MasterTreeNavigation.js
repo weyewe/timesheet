@@ -3,7 +3,7 @@
 	
 	For the personal reporting, we want to extract script from the server and execute it. 
 */
-Ext.define("AM.controller.TreePanelNavigation", {
+Ext.define("AM.controller.MasterTreeNavigation", {
 	extend : "Ext.app.Controller",
 	views : [
 		"master.MasterProcessList"

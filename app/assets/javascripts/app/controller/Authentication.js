@@ -12,7 +12,11 @@ Ext.define("AM.controller.Authentication", {
 		{
 			ref: 'viewport',
 			selector: 'vp'
-		} 
+		} ,
+		{
+			ref : 'userMenu',
+			selector : 'navigation #optionsMenu'
+		},
 	],
 	
 	 
@@ -45,6 +49,10 @@ Ext.define("AM.controller.Authentication", {
 		}
 		
 		// main navigation specific UI 
+		
+		// set user menu
+		
+		
 		
 
 		

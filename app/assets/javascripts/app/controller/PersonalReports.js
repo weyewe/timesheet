@@ -5,10 +5,10 @@ Ext.define('AM.controller.PersonalReports', {
   // models: ['PersonalReport'],
 
   views: [
-		'PersonalReport'
+		'PersonalReportProcess'
   ],
 
-  	refs: [
+	refs: [
 		{
 			ref : 'personalreportProcess',
 			selector : 'personalreportProcess'
@@ -32,29 +32,29 @@ Ext.define('AM.controller.PersonalReports', {
 		var activeItem = me.getPersonalreportProcess();
 		console.log("on personal reprot activated");
 		
-		Ext.Ajax.request(
-			{
-				url: "api/work_reports",
-				method : "GET",
-				// scripts : true, 
-				success: function (xhr) {
-					try {
-
-
-						var decodedResponseText = Ext.decode( xhr.responseText );
-						var newComponent = Ext.Component.create( decodedResponseText['component_config']) ;
-
-
- 
-						activeItem.add(  newComponent );
-
-					}
-					catch (ex) {
-						alert('Exception ' + ex);
-					}
-
-				} 
-			});
+		// Ext.Ajax.request(
+		// 	{
+		// 		url: "api/work_reports",
+		// 		method : "GET",
+		// 		// scripts : true, 
+		// 		success: function (xhr) {
+		// 			try {
+		// 
+		// 
+		// 				var decodedResponseText = Ext.decode( xhr.responseText );
+		// 				var newComponent = Ext.Component.create( decodedResponseText['component_config']) ;
+		// 
+		// 
+		//  
+		// 				activeItem.add(  newComponent );
+		// 
+		// 			}
+		// 			catch (ex) {
+		// 				alert('Exception ' + ex);
+		// 			}
+		// 
+		// 		} 
+		// 	});
 	},
  
 	onPersonalReportDeActivated: function(){

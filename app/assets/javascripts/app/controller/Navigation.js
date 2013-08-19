@@ -1,8 +1,7 @@
 Ext.define("AM.controller.Navigation", {
 	extend : "Ext.app.Controller",
 	views : [
-		"Content",
-		"PersonalReport"
+		"Content" 
 	],
 	
  
@@ -31,9 +30,6 @@ Ext.define("AM.controller.Navigation", {
 			'navigation	button[action=switchPersonalReport], navigation button[action=switchWorkLog], navigation button[action=switchMaster]' : {
 				click : me.switchScreen
 			},
-			
-		
-			
 		});
 	},
 	

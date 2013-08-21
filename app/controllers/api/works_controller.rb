@@ -176,6 +176,23 @@ class Api::WorksController < Api::BaseApiController
     #     :series_y_fields => ['comedy', 'action', 'drama', 'thriller'],
     #     
     # }
+    
+    # it is proven to be working.. 
+    # on the reportpanel
+    # afterrender: build the components: the chart and the list. 
+=begin
+  afterrender: 
+  panel.removeAll(); 
+  panel.buildComponents(); 
+  
+  refreshView: 
+  panel.removeAll();
+  panel.buildComponents(); 
+  
+  that's it. pretty much simple. lets' do it later. 
+  
+=end
+
     render :json => {
       :component_config => {
             :title  => 'Panel dynamically loaded',

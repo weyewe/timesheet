@@ -1,9 +1,11 @@
-Ext.define('AM.view.report.workproject.List' ,{
-  	extend: 'Ext.grid.Panel',
-  	alias : 'widget.workprojectList',
+Ext.define('AM.view.report.workproject.Chart' ,{
+  	extend: 'Ext.chart.Chart',
+  	alias : 'widget.workprojectChart',
 
-  	store: 'Works', 
- 
+  	store: '', 
+ 		series : [], // must come from the server. Not fixed project displayed. 
+		// axes : [],can be hard coded 
+		
 
 	initComponent: function() {
 		this.columns = [

@@ -23,6 +23,21 @@ class Api::WorksController < Api::BaseApiController
       
       # calendar
       
+    elsif params[:selectedRecordId].present?
+      project = Project.where(:id => params[:selectedRecordId]).first 
+      if project.nil?
+        @objects  = [] 
+        @total = 0 
+      else
+        @objects = Work.active_objects.where(:user_id => current_user.id, 
+                :project_id =>  project.id).
+                joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
+                
+        @total =         Work.active_objects.where(:user_id => current_user.id, 
+                        :project_id =>  project.id).count
+      end
+      
+      
     else
       @objects = Work.active_objects.where(:user_id => current_user.id).joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
       @total = Work.active_objects.where(:user_id => current_user.id).count 
@@ -204,18 +219,77 @@ class Api::WorksController < Api::BaseApiController
   end
   
   def project_reports
-    render :json => {
-      :config => {
-        :xField => 'year',
-        :yField =>  [  'comedy', 'action', 'drama', 'thriller'],
-        :fields=> ['year', 'comedy', 'action', 'drama', 'thriller'],
-        :data => [
-          {year: 2005, comedy: 34000000, action: 23890000, drama: 18450000, thriller: 20060000},
-          {year: 2006, comedy: 56703000, action: 38900000, drama: 12650000, thriller: 21000000},
-          {year: 2007, comedy: 42100000, action: 50410000, drama: 25780000, thriller: 23040000},
-          {year: 2008, comedy: 38910000, action: 56070000, drama: 24810000, thriller: 26940000}
-        ]
+    
+    records = []
+    Project.all.each do |project|
+      records << {
+        :name => project.title, 
+        :data1 => project.works.sum("duration"),
+        :id => project.id
       }
-    }
+    end
+    
+    # records = [
+    #   {
+    #     :name => 'Project 1',
+    #     :data1 => 350,
+    #     :id => 1 
+    #   },
+    #   {
+    #     :name => 'Project 2',
+    #     :data1 => 250,
+    #     :id => 2 
+    #   },
+    #   {
+    #     :name => 'Project 3',
+    #     :data1 => 100,
+    #     :id => 3
+    #   },
+    #   {
+    #     :name => 'Project 4',
+    #     :data1 => 180,
+    #     :id => 4 
+    #   },
+    #   {
+    #     :name => 'Project 5',
+    #     :data1 => 160,
+    #     :id => 5 
+    #   }
+    # ]
+    
+    render :json => { :records => records , :total => records.count, :success => true }
+    
+    # render :json => {
+    #   :config => {
+    #     :xField => 'year',
+    #     :yField =>  [  'comedy', 'action', 'drama', 'thriller'],
+    #     :fields=> ['year', 'comedy', 'action', 'drama', 'thriller'],
+    #     :data => [
+    #       {
+    #         :name => 'Project 1',
+    #         :data1 => 350
+    #       },
+    #       {
+    #         :name => 'Project 2',
+    #         :data1 => 250
+    #       },
+    #       {
+    #         :name => 'Project 3',
+    #         :data1 => 100
+    #       },
+    #       {
+    #         :name => 'Project 4',
+    #         :data1 => 180
+    #       },
+    #       {
+    #         :name => 'Project 5',
+    #         :data1 => 160
+    #       }
+    #     ]
+    #   }
+    # }
+  end
+  
+  def category_reports
   end
 end

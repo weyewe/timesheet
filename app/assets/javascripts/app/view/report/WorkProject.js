@@ -33,7 +33,7 @@ Ext.define('AM.view.report.WorkProject', {
 							var decodedResponseText = Ext.decode( xhr.responseText );
 							// var config = Ext.Component.create( decodedResponseText['config']) ;
 							var config = decodedResponseText['config'];
-							me.buildChart( config );
+							me.buildChart( config);
 							me.setLoading(false);
 			
 							console.log("final items count: " + me.items.length );
@@ -84,215 +84,16 @@ Ext.define('AM.view.report.WorkProject', {
 		},
 		
 		
-		generateData: function(n, floor){
-		        var data = [],
-		            p = (Math.random() *  11) + 1,
-		            i;
-
-		        floor = (!floor && floor !== 0)? 20 : floor;
-
-		        for (i = 0; i < (n || 12); i++) {
-		            data.push({
-		                name: Ext.Date.monthNames[i % 12],
-		                data1: Math.floor(Math.max((Math.random() * 100), floor)),
-		                data2: Math.floor(Math.max((Math.random() * 100), floor)),
-		                data3: Math.floor(Math.max((Math.random() * 100), floor)),
-		                data4: Math.floor(Math.max((Math.random() * 100), floor)),
-		                data5: Math.floor(Math.max((Math.random() * 100), floor)),
-		                data6: Math.floor(Math.max((Math.random() * 100), floor)),
-		                data7: Math.floor(Math.max((Math.random() * 100), floor)),
-		                data8: Math.floor(Math.max((Math.random() * 100), floor)),
-		                data9: Math.floor(Math.max((Math.random() * 100), floor))
-		            });
-		        }
-		        return data;
-		    },
-		buildChart: function(config){
-			var me  = this;
-			var store1 = Ext.create('Ext.data.JsonStore', {
-			        fields: ['name', 'data1', 'data2', 'data3', 'data4', 'data5', 'data6', 'data7', 'data9', 'data9'],
-			        data: me.generateData()
-			    });
-			
-			console.log("The store1");
-			console.log( store1);
-			
-			
-			var chart = Ext.create('Ext.chart.Chart', {
-			            style: 'background:#fff',
-			            animate: true,
-			            shadow: true,
-			            store: store1,
-									flex: 1 , 
-			            axes: [{
-			                type: 'Numeric',
-			                position: 'left',
-			                fields: ['data1'],
-			                label: {
-			                    renderer: Ext.util.Format.numberRenderer('0,0')
-			                },
-			                title: 'Number of Hits',
-			                grid: true,
-			                minimum: 0
-			            }, {
-			                type: 'Category',
-			                position: 'bottom',
-			                fields: ['name'],
-			                title: 'Month of the Year'
-			            }],
-			            series: [{
-			                type: 'column',
-			                axis: 'left',
-			                highlight: true,
-			                tips: {
-			                  trackMouse: true,
-			                  width: 140,
-			                  height: 28,
-			                  renderer: function(storeItem, item) {
-			                    this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data1') + ' $');
-			                  }
-			                },
-			                label: {
-			                  display: 'insideEnd',
-			                  'text-anchor': 'middle',
-			                    field: 'data1',
-			                    renderer: Ext.util.Format.numberRenderer('0'),
-			                    orientation: 'vertical',
-			                    color: '#333'
-			                },
-			                xField: 'name',
-			                yField: 'data1'
-			            }]
-			        });
-			console.log("The composed chart:");
-			console.log( chart ) ;
-			this.add( chart ) ;
-		},
-		
-		// buildChart: function(config){
-		// 	var newComponent= Ext.Component.create({
-		// 		xtype: 'panel',
-		// 		html : "Tihs is awesome. Banzai! strangely, we can create this shite. "
-		// 	});
-		// 	
-		// 	this.add( newComponent ) ;
-		// 	
-		// 	
-		// },
-		// 
-		// buildChart:function(config){
-		// 	console.log("Inside buildChart. The config: ");
-		// 	console.log( config ) ;
-		// 	var me = this; 
-		// 	me.chartStore = Ext.create('Ext.data.JsonStore', {
-		// 		fields:  config['fields'],
-		// 		data: config['data']
-		// 	});
-		// 	console.log("The chartStore");
-		// 	console.log( me.chartStore );
-		// 	 
-		// 	
-		// 	var chartConfig = {
-		// 		xtype: 'chart',
-		// 		flex: 1 ,
-		// 		animate: true,
-		// 		shadow: true,
-		// 		store: me.chartStore,
-		// 		legend: {
-		// 			position: 'right'
-		// 		},
-		// 		axes: [
-		// 			{
-		// 				type: 'Numeric',
-		// 				position: 'bottom',
-		// 				fields:  ['comedy', 'action', 'drama', 'thriller'],
-		// 				title: false,
-		// 				grid: true,
-		// 				label: {
-		// 					renderer: function(v) {
-		// 						return String(v).replace(/000000$/, 'M');
-		// 					}
-		// 				},
-		// 				roundToDecimal: false
-		// 			}, 
-		// 			{
-		// 				type: 'Category',
-		// 				position: 'left',
-		// 				fields:  ['year'],
-		// 				title: false
-		// 			}
-		// 		],
-		// 		series: [
-		// 			{
-		// 				type: 'bar',
-		// 				axis: 'bottom',
-		// 				gutter: 80,
-		// 				xField:  'year',
-		// 				yField:  ['comedy', 'action', 'drama', 'thriller'],
-		// 				stacked: true,
-		// 				tips: {
-		// 					trackMouse: true,
-		// 					width: 65,
-		// 					height: 28,
-		// 					renderer: function(storeItem, item) {
-		// 						this.setTitle(String(item.value[1] / 1000000) + 'M');
-		// 					}
-		// 				}
-		// 			}
-		// 		]
-		// 	}
-		// 	
-		// 	
-		// 	var chart = Ext.Component.create( chartConfig );
-		// 	console.log("Creating componetn");
-		// 	console.log( chart ) ;
-		// 	// me.items = [ chart ];
-		// 	
-		// 	console.log("The items inspect: ");
-		// 	console.log( me.items ) ;
-		// 	
-		// 	me.add( chart );
-		// 	console.log("After adding shite");
-		// 	console.log( me.items.length ) ;
-		// 	
-		// 	
-		// 	
-		// 	// return chartConfig ;
-		// 	
-		// },
-		//  
-	  
-		loadStore: function(  ){
+	 
+	
+		buildChart: function(){
 			var me = this; 
-			var date = me.currentFocusDate; 
-			var viewType = me.currentViewType; 
-			me.setLoading( true ) ; 
-			var viewValue = 0;  // default viewType == week 
-			if(viewType === 'month'){
-				viewValue = 1;
-			}else if( viewType ==='year'){
-				viewValue = 2 
-			}
-			
-			me.store1.load({
-				params: {
-					viewValue : viewValue,
-					focusDate :  Ext.Date.format( date, 'Y-m-d H:i:s')
-				},
-				callback : function(records, options, success){
-					me.setLoading(false);
-					result = me.fireEvent('chartLoaded', Ext.Date.format( date, 'Y-m-d H:i:s'));
-				}
-			});
-		},
-		
-		buildIncomeChart: function(){
-			var me = this; 
-			
+
 			me.store1 = Ext.create(Ext.data.JsonStore, {
 				fields	: [
 					'name',
-					'data1'
+					'data1',
+					'id'
 				],
 				proxy  	: {
 					type : 'ajax',
@@ -305,9 +106,9 @@ Ext.define('AM.view.report.WorkProject', {
 				},
 				autoLoad : false 
 			});
-			
+
 			me.loadStore();
-	
+
 			var chartConfig = {
 				xtype: 'chart',
 				flex : 3 ,
@@ -339,16 +140,126 @@ Ext.define('AM.view.report.WorkProject', {
             yField: 'data1',
 						listeners:{
 							itemmousedown : function(obj) {
-						
-								me.fireEvent('seriesClicked',  obj,  me.currentViewType  );
+								console.log("@itemmousedown");
+								console.log("The obj");
+								console.log(obj);
+								
+								console.log("currentViewType: ");
+								console.log(me.currentViewType);
+								console.log('=======\n')
+
+								me.fireEvent('seriesClicked',  obj,  me.currentViewType  , me );
 							}
 						}
         }]
 			}
-	
+
 			return chartConfig ; 
 		},
 		
+		// 
+		// buildChart: function(config){
+		// 	console.log("The config: " ) ;
+		// 	console.log( config ) ;
+		// 	var me  = this;
+		// 	var store1 = Ext.create('Ext.data.JsonStore', {
+		// 	        fields: ['name', 'data1'],
+		// 	        data:  config['data']
+		// 	    });
+		// 	
+		// 	console.log("The store1");
+		// 	console.log( store1);
+		// 	
+		// 	
+		// 	var chart = Ext.create('Ext.chart.Chart', {
+		// 	            style: 'background:#fff',
+		// 	            animate: true,
+		// 	            shadow: true,
+		// 	            store: store1,
+		// 							flex: 1 ,    // this is the addition.. fucker
+		// 							
+		// 			 
+		// 							
+		// 							
+		// 	            axes: [{
+		// 	                type: 'Numeric',
+		// 	                position: 'left',
+		// 	                fields: ['data1'],
+		// 	                label: {
+		// 	                    renderer: Ext.util.Format.numberRenderer('0,0') 
+		// 	                },
+		// 	                title: 'Number of Mins',
+		// 	                grid: true,
+		// 	                minimum: 0
+		// 	            }, {
+		// 	                type: 'Category',
+		// 	                position: 'bottom',
+		// 	                fields: ['name'],
+		// 	                title: 'Project'
+		// 	            }],
+		// 	            series: [{
+		// 	                type:   'column' ,// 'column',
+		// 	                axis: 'left',
+		// 	                highlight: true,
+		// 	                tips: {
+		// 	                  trackMouse: true,
+		// 	                  width: 140,
+		// 	                  height: 28,
+		// 	                  renderer: function(storeItem, item) {
+		// 	                    this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data1') + ' $');
+		// 	                  }
+		// 	                },
+		// 	                // label: {
+		// 	                //   display: 'insideEnd',
+		// 	                //   'text-anchor': 'middle',
+		// 	                //     field: 'data1',
+		// 	                //     renderer: Ext.util.Format.numberRenderer('0'),
+		// 	                //     orientation: 'vertical',
+		// 	                //     color: '#333'
+		// 	                // },
+		// 	                xField: 'name',
+		// 	                yField: 'data1',
+		// 									listeners:{
+		// 										itemmousedown : function(obj) {
+		// 
+		// 											me.fireEvent('seriesClicked',  obj,  me.currentViewType  );
+		// 										}
+		// 									}
+		// 	            }]
+		// 	        });
+		// 	console.log("The composed chart:");
+		// 	console.log( chart ) ;
+		// 	this.add( chart ) ;
+		// },
+		 
+	  
+		loadStore: function(  ){
+			var me = this; 
+			var date = me.currentFocusDate; 
+			
+			console.log("The date:" ) ;
+			console.log( date ) ;
+			var viewType = me.currentViewType; 
+			me.setLoading( true ) ; 
+			var viewValue = 0;  // default viewType == week 
+			if(viewType === 'month'){
+				viewValue = 1;
+			}else if( viewType ==='year'){
+				viewValue = 2 
+			}
+			
+			me.store1.load({
+				params: {
+					viewValue : viewValue,
+					focusDate :  Ext.Date.format( date, 'Y-m-d H:i:s')
+				},
+				callback : function(records, options, success){
+					me.setLoading(false);
+					result = me.fireEvent('chartLoaded', Ext.Date.format( date, 'Y-m-d H:i:s'));
+				}
+			});
+		},
+		 
 		buildList: function(){
 			var listConfig = {
 				xtype: 'workprojectList',
@@ -410,14 +321,7 @@ Ext.define('AM.view.report.WorkProject', {
 			var me = this; 
 			me.buildToolbar();
 			
-			// 	    this.items = [  {
-			// 		xtype : 'container',
-			// 		itemId : 'work_project_chart_container',
-			// 		html : "Wait for the chart :)",
-			// 		flex : 4
-			// 	}, 
-			// 	me.buildList()  
-			// ];
+			this.items = [  me.buildChart() , me.buildList() ];
 			
 	    this.callParent(arguments);
 		},

@@ -1,6 +1,6 @@
 class Project < ActiveRecord::Base
    
-  has_many :bookings
+  has_many :works
   belongs_to :customer 
   
   validates_presence_of :title  , :customer_id

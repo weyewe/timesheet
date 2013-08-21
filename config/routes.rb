@@ -13,8 +13,9 @@ Timesheet::Application.routes.draw do
     get 'search_categories' => 'categories#search', :as => :search_categories
     
     
-    get 'work_reports' => 'works#reports', :as => :work_reports
+    # get 'work_reports' => 'works#reports', :as => :work_reports # not needed. it is just an example 
     get 'work_project_reports' => 'works#project_reports', :as => :work_project_reports
+    get 'work_category_reports' => 'works#category_reports', :as => :work_category_reports
     
     resources :customers 
     resources :projects 

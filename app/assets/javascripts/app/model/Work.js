@@ -35,7 +35,10 @@ Ext.define('AM.model.Work', {
 					return { work : record.data };
 				}
 			}
-		}
+		},
+		 
 	
+	
+		
   
 });

@@ -9,15 +9,14 @@ Ext.define('AM.view.report.workproject.List' ,{
 		this.columns = [
 			{
 				xtype : 'templatecolumn',
-				text : "Sumber",
+				text : "Info",
 				flex : 1,
-				tpl : '<b>{income_source_type}</b>' + '<br />' + '<br />' +
-							'Code: <b>{code}</b>'   
+				tpl : '<b>{category_name}</b>' + '<br />'  + 
+							'Duration: <b>{duration}</b> mins'   + '<br />'  +  '<br />'  + 
+							'{description}'
 			},
 			
-			 
-			{ header: 'Jumlah',  dataIndex: 'amount',  flex: 1 , sortable: false} ,
-			{ header: 'Waktu',  dataIndex: 'transaction_datetime',  flex: 1 , sortable: false} 
+			  
 	
 		];
  

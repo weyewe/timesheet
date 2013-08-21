@@ -6,10 +6,15 @@ Ext.define('AM.controller.WorkProjectReports', {
 
   views: [
     'report.WorkProject',
+		'report.workproject.List',
 		'Viewport'
   ],
 
 	refs: [
+		{
+			ref: 'list',
+			selector: 'workprojectList'
+		} ,
 		{
 			ref: 'viewport',
 			selector: 'vp'
@@ -39,15 +44,83 @@ Ext.define('AM.controller.WorkProjectReports', {
 
 	onBeforeRender: function(panel ){
 		console.log("onBeforeRender");
-		panel.buildChartAndList();
+		// panel.buildChartAndList();
 	},
 
 	clearList: function(){
 		console.log("from the clearList");
 	},
 	
-	updateList: function(){
+	updateList: function(clickedPoint, viewType, chart){
 		console.log("from the updateList");
+		console.log("The series is clicked");
+		console.log("clickedPoint");
+		console.log(clickedPoint);
+		console.log("\nviewType:");
+		console.log( viewType );
+		var list = this.getList(); 
+		// var selectedDateArray = clickedPoint.value[0].split('/');
+		// var selectedDate = new Date(
+		// 		selectedDateArray[0],
+		// 		selectedDateArray[1]-1, // in javascript, month starts from 0
+		// 		selectedDateArray[2]
+		// 	);
+		// 
+		
+		// get the store. 
+		// for the one with given field, what is the ID?
+		
+		var recordName = clickedPoint.value[0];
+		result = chart.store1.queryBy(function(record){
+			console.log("\n=========");
+			console.log("The record is ");
+			console.log( record ); 
+			console.log( record.get("name"));
+			console.log("clickedPoint");
+			console.log( clickedPoint.value[0]);
+			return record.get("name") === recordName;
+			
+		})
+		
+		console.log("The result:");
+		console.log( result ) ;
+ 
+		if( result.length !==0 ){
+			console.log("The firs result");
+			console.log( result.length);
+			console.log( result.items[0].get('name') );
+			console.log("The id:  " + result.items[0].get('id'));
+		}else{
+			return;
+		}
+		
+		
+		
+		var viewValue = 0;
+		if( viewType === 'month'){
+			viewValue = 1;
+		}
+		
+		var viewport = this.getViewport();
+		
+		list.store.getProxy().extraParams = {
+		    viewValue : viewValue,
+				selectedRecordId: result.items[0].get('id')
+		};
+		
+		
+		viewport.setLoading(true);
+		list.store.load({
+			// params: {
+			// 	viewValue : viewValue,
+			// 	selectedRecordId: result.items[0].get('id')
+			// },
+			callback : function(records, options, success){
+				list.setTitle(recordName );
+				viewport.setLoading(false);
+			}
+		});
+		
 	},
 	
 	onActivePanel: function(){
@@ -55,15 +128,8 @@ Ext.define('AM.controller.WorkProjectReports', {
 	},
 	
 	onAfterRender: function(panel){
-		console.log("from the WorkProjectReports#onAfterRender");
-		console.log( "Total number of items: " + panel.items.length );
-		// alert("After Render.. we are gonna create the chart");
-		
-		// now, get the wrapper for the chart.. get the config from server 
-		// Create the chart. 
-		
-		// How about the list? Depends on what we want <3
-		// check how our booker app did it. 
+		var list = this.getList(); 
+		list.store.loadData([],false);
 	},
 	
 	
@@ -74,6 +140,9 @@ Ext.define('AM.controller.WorkProjectReports', {
 	
 	onBeforeDestroy: function(){
 		console.log("from the onBeforeDestroy");
+		// normalize the extraParams
+		var list = this.getList(); 
+		list.store.getProxy().extraParams = {};
 		
 	},
 	

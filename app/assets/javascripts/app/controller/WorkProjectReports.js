@@ -30,11 +30,17 @@ Ext.define('AM.controller.WorkProjectReports', {
 				'activate' : this.onActivePanel,
 				'afterrender' : this.onAfterRender,
 				'destroy' : this.onDestroy,
-				'beforedestroy' : this.onBeforeDestroy
+				'beforedestroy' : this.onBeforeDestroy,
+				'beforerender': this.onBeforeRender
       } 
 		
     });
   },
+
+	onBeforeRender: function(panel ){
+		console.log("onBeforeRender");
+		panel.buildChartAndList();
+	},
 
 	clearList: function(){
 		console.log("from the clearList");
@@ -48,8 +54,11 @@ Ext.define('AM.controller.WorkProjectReports', {
 		console.log("from the onActivePanel");
 	},
 	
-	onAfterRender: function(){
+	onAfterRender: function(panel){
 		console.log("from the WorkProjectReports#onAfterRender");
+		console.log( "Total number of items: " + panel.items.length );
+		// alert("After Render.. we are gonna create the chart");
+		
 		// now, get the wrapper for the chart.. get the config from server 
 		// Create the chart. 
 		

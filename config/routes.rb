@@ -14,6 +14,7 @@ Timesheet::Application.routes.draw do
     
     
     get 'work_reports' => 'works#reports', :as => :work_reports
+    get 'work_project_reports' => 'works#project_reports', :as => :work_project_reports
     
     resources :customers 
     resources :projects 

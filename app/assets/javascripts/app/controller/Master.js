@@ -38,6 +38,7 @@ Ext.define("AM.controller.Master", {
 		// console.log("Master process panel is deactivated");
 		var worksheetPanel = Ext.ComponentQuery.query("masterProcessPanel #worksheetPanel")[0];
 		worksheetPanel.setTitle(false);
+		// worksheetPanel.setHeader(false);
 		worksheetPanel.removeAll();		 
 		var defaultWorksheet = Ext.create( "AM.view.master.Default");
 		worksheetPanel.add(defaultWorksheet); 
@@ -114,28 +115,16 @@ Ext.define("AM.controller.Master", {
 	},
 	
 	reportFolder : {
-		text:'Report', 
+		text:'Employee Report', 
     viewClass:'Will', 
     iconCls:'text-folder', 
     expanded: true,
 		children : [
-			{ 
-          text:'By Project', 
-          viewClass:'AM.view.report.WorkProject', 
-          leaf:true, 
-          iconCls:'text' ,
-					conditions : [
-						{
-							controller : 'works',
-							action : 'reports'
-						}
-						
-					]
-      },
+			
 	
 			{ 
           text:'By Category', 
-          viewClass:'AM.view.report.WorkCategory', 
+          viewClass:'AM.view.master.report.employee.WorkCategory', 
           leaf:true, 
           iconCls:'text' ,
 					conditions : [
@@ -149,145 +138,7 @@ Ext.define("AM.controller.Master", {
 		]
 		
 	},
-	
-	factoryFolder : {
-		text:'Report', 
-    viewClass:'Will', 
-    iconCls:'text-folder', 
-    expanded: true,
-		children : [
-			{ 
-          text:'Penerimaan Bahan Bubut', 
-          viewClass:'AM.view.factory.ItemReceival', 
-          leaf:true, 
-          iconCls:'text' ,
-					conditions : [
-						{
-							controller : 'item_receivals',
-							action : 'index'
-						}
-						
-					]
-      },
-      { 
-          text:'Pengerjaan Pabrik', 
-          viewClass:'AM.view.factory.TemplateSalesItem', 
-          leaf:true, 
-          iconCls:'text',
-					conditions : [
-						{
-							controller : 'template_sales_items',
-							action : 'index'
-						}
-					]
-      }
-		]
-		
-	},
-	
-	salesFolder : {
-		text:'Sales', 
-    viewClass:'Will', 
-    iconCls:'text-folder', 
-    expanded: true,
-		children : [
-			{ 
-				text:'Customer', 
-				viewClass:'AM.view.sales.Customer', 
-				leaf:true, 
-				iconCls:'text' ,
-				conditions : [
-					{
-						controller : 'customers',
-						action : 'index'
-					}
-				]
-			},
-			{ 
-				text:'Penjualan', 
-				viewClass:'AM.view.sales.SalesOrder', 
-				leaf:true, 
-				iconCls:'text' ,
-				conditions : [
-					{
-						controller : 'sales_orders',
-						action : 'index'
-					}
-				]
-			},
-			{ 
-				text:'Pengiriman', 
-				viewClass:'AM.view.sales.Delivery', 
-				leaf:true, 
-				iconCls:'text' ,
-				conditions : [
-					{
-						controller : 'deliveries',
-						action : 'index'
-					}
-				]
-			},
-			{ 
-				text:'Sales Return', 
-				viewClass:'AM.view.sales.SalesReturn', 
-				leaf:true, 
-				iconCls:'text' ,
-				conditions : [
-					{
-						controller : 'sales_returns',
-						action : 'index'
-					}
-				]
-			},
-			{ 
-				text:'Guarantee Return', 
-				viewClass:'AM.view.sales.GuaranteeReturn', 
-				leaf:true, 
-				iconCls:'text' ,
-				conditions : [
-					{
-						controller : 'guarantee_returns',
-						action : 'index'
-					}
-				]
-			}
-		]
-		
-	},
-	
-	paymentFolder : {
-		text:'Payment', 
-    viewClass:'Will', 
-    iconCls:'text-folder', 
-    expanded: true,
-		children : [
-			{ 
-				text:'Invoice', 
-				viewClass:'AM.view.payment.Invoice', 
-				leaf:true, 
-				iconCls:'text' ,
-				conditions : [
-					{
-						controller : 'invoices',
-						action : 'index'
-					}
-				]
-			},
-			{ 
-				text:'Pembayaran', 
-				viewClass:'AM.view.payment.Payment', 
-				leaf:true, 
-				iconCls:'text' ,
-				conditions : [
-					{
-						controller : 'payments',
-						action : 'index'
-					}
-				]
-			}
-		]
-	},
-	
+	 
 	onActiveProtectedContent: function( panel, options) {
 		var me  = this; 
 		var currentUser = Ext.decode( localStorage.getItem('currentUser'));

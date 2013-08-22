@@ -14,5 +14,6 @@ Ext.define('AM.view.report.WorkProject', {
 		listXType: 'workprojectList',
 		yAxisLabel : "Time Spent (mins)",
 		xAxisLabel : "Project",
-		panelTitle : "Project"
+		panelTitle : "Project",
+		worksheetId: "#personal-worksheetPanel"
 });

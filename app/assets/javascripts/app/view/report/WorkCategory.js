@@ -14,5 +14,7 @@ Ext.define('AM.view.report.WorkCategory', {
 		listXType: 'workcategoryList',
 		yAxisLabel : "Time Spent (mins)",
 		xAxisLabel : "Category",
-		panelTitle: "Category"
+		panelTitle: "Category",
+		worksheetId: "#personal-worksheetPanel",
+		// autoChartLoad: true 
 });

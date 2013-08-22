@@ -1,12 +1,13 @@
-Ext.define('AM.controller.WorkCategoryReports', {
+Ext.define('AM.controller.MasterEmployeeWorkCategoryReports', {
   extend: 'Ext.app.Controller',
 
   // stores: ['Incomes'],
   // models: ['Income'],
 
   views: [
-    'report.WorkCategory',
+    'master.report.employee.WorkCategory',
 		'report.workcategory.List',
+		'master.report.UserList',
 		'Viewport'
   ],
 
@@ -16,20 +17,24 @@ Ext.define('AM.controller.WorkCategoryReports', {
 			selector: 'workcategoryList'
 		},
 		{
+			ref: 'recordList',
+			selector: 'masterreportuserList'
+		},
+		{
 			ref: 'viewport',
 			selector: 'vp'
 		},
 		{
 			ref : 'workCategoryReport',
-			selector : 'workCategoryReport'
+			selector : 'masterreportemployeeWorkCategoryReport'
 		} 
 	],
 
   init: function() {
- 
+ 		console.log("init controller for master.employee.WorkCategoryReports");
 	
     this.control({
-      'workCategoryReport': {
+      'masterreportemployeeWorkCategoryReport': {
         'chartLoaded': this.clearList ,
 				'seriesClicked' : this.updateList,
 				'activate' : this.onActivePanel,
@@ -37,10 +42,22 @@ Ext.define('AM.controller.WorkCategoryReports', {
 				'destroy' : this.onDestroy,
 				'beforedestroy' : this.onBeforeDestroy,
 				'beforerender': this.onBeforeRender
-      } 
+      } ,
+      'masterreportuserList': {
+        selectionchange: this.recordSelectionChange,
+				afterrender : this.loadRecordList,
+      },
 		
     });
   },
+
+	loadRecordList: function(){
+		var recordList = this.getRecordList();
+		recordList.store.load();
+	},
+	recordSelectionChange: function(){
+		console.log("Record selection change");
+	},
 
 	onBeforeRender: function(panel ){
 		// console.log("onBeforeRender");
@@ -50,7 +67,8 @@ Ext.define('AM.controller.WorkCategoryReports', {
 	},
 
 	clearList: function(){
-		// console.log("from the clearList");
+		console.log("CHart loaded");
+		console.log("from the clearList");
 		var list = this.getList(); 
 		list.store.loadData([],false);
 		list.setTitle('');
@@ -60,6 +78,7 @@ Ext.define('AM.controller.WorkCategoryReports', {
 	},
 	
 	updateList: function(clickedPoint, viewType, chart){
+		console.log("Controller is responding to the shite: seriesClicked");
 		var list = this.getList(); 
 		
 		var recordName = clickedPoint.value[0];
@@ -111,8 +130,12 @@ Ext.define('AM.controller.WorkCategoryReports', {
 	},
 	
 	onAfterRender: function(panel){
+		console.log("onAfterRender in master.employee.WorkCategoryReports")
 		var list = this.getList(); 
 		list.store.loadData([],false);
+		
+		var recordList = this.getRecordList();
+		recordList.store.load();
 	},
 	
 	

@@ -7,6 +7,9 @@ Ext.define('AM.view.ChartInspect', {
 			align : 'stretch'
 		},
 
+/*
+	These are the configurations
+*/
 		currentFocusDate : new Date(),
 		currentViewType : 'week',
 		
@@ -21,6 +24,14 @@ Ext.define('AM.view.ChartInspect', {
 		xAxisLabel : "Project",
 		yAxisLabel : 'Time Spent (mins)',
 		panelTitle: "Project",
+		chartListWrapperXType: "container",
+		worksheetId: '#worksheetPanel',
+		autoChartLoad : true, 
+		selectedRecordId : null, 
+
+/*
+	End of configuration 
+*/
 	 
 	 
 	
@@ -40,8 +51,11 @@ Ext.define('AM.view.ChartInspect', {
 				},
 				autoLoad : false 
 			});
-
-			me.loadStore();
+			
+			if( me.autoChartLoad){
+				me.loadStore();
+			}
+			
 			
 
 			var chartConfig = {
@@ -76,6 +90,7 @@ Ext.define('AM.view.ChartInspect', {
 							itemmousedown : function(obj) { 
 								 
 								me.fireEvent('seriesClicked',  obj,  me.currentViewType  , me );
+								console.log("The series is clicked");
 							}
 						}
         }]
@@ -101,12 +116,26 @@ Ext.define('AM.view.ChartInspect', {
 			me.store1.load({
 				params: {
 					viewValue : viewValue,
-					focusDate :  Ext.Date.format( date, 'Y-m-d H:i:s')
+					focusDate :  Ext.Date.format( date, 'Y-m-d H:i:s'),
+					selectedRecordId: me.selectedRecordId 
 				},
 				callback : function(records, options, success){
 					me.setLoading(false);
 					me.fireEvent('chartLoaded', Ext.Date.format( date, 'Y-m-d H:i:s'));
-					me.up("container").setTitle("By "+ me.panelTitle + ": " + me.getDurationText() );
+					// console.log("The container");
+					// console.log( me.up("container"));
+			 
+					// console.log("\nBefore updating title");
+					// console.log( me.up('worksheet'));
+					var worksheet = me.up(  me.worksheetId);
+					if( worksheet && worksheet.setTitle ){
+						// console.log("There is worksheet");
+						// console.log(worksheet);
+						worksheet.setTitle("By "+ me.panelTitle + ": " + me.getDurationText() );
+					}else{
+						// console.log("There is no fucking worksheet");
+					}
+					// me.up(  me.up('worksheet')).setTitle("By "+ me.panelTitle + ": " + me.getDurationText() );
 				}
 			});
 			

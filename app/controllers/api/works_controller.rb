@@ -1,44 +1,50 @@
 class Api::WorksController < Api::BaseApiController
   
+  # for the list, not the charting. 
   def index
     
     if params[:livesearch].present? 
-      livesearch = "%#{params[:livesearch]}%"
-      @objects = Work.active_objects.joins(:customer).where{
-        ( user_id.eq current_user.id) & 
-        (is_deleted.eq false) & 
-        (
-          (title =~  livesearch )
-        )
-        
-      }.page(params[:page]).per(params[:limit]).order("id DESC")
-      
-      @total = Work.where{
-        ( user_id.eq current_user.id) & 
-        (is_deleted.eq false) & 
-        (
-          (title =~  livesearch )
-        )
-      }.count
-      
-      # calendar
-      
+      build_livesearch_results 
     elsif params[:selectedRecordId].present? and params[:viewer] == 'personal'
-      if params[:perspective] == 'project'
-        build_personal_project_details
-      elsif params[:perspective] == 'category'
-        build_personal_category_details
-      end 
+      build_personal_report_results # current_user scope 
     elsif params[:selectedRecordId].present? and params[:viewer] == 'master'
-      if params[:perspective] == 'project'
-        build_master_project_details
-      elsif params[:perspective] == 'category'
-        build_master_category_details
-      end
+      build_master_report_results  # whole company scope 
     else
       @objects = Work.active_objects.where(:user_id => current_user.id).joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
       @total = Work.active_objects.where(:user_id => current_user.id).count 
     end
+  end
+  
+  def build_livesearch_results
+    livesearch = "%#{params[:livesearch]}%"
+    @objects = Work.active_objects.joins(:customer).where{
+      ( user_id.eq current_user.id) & 
+      (is_deleted.eq false) & 
+      (
+        (title =~  livesearch )
+      )
+      
+    }.page(params[:page]).per(params[:limit]).order("id DESC")
+    
+    @total = Work.where{
+      ( user_id.eq current_user.id) & 
+      (is_deleted.eq false) & 
+      (
+        (title =~  livesearch )
+      )
+    }.count
+  end
+  
+  def build_personal_report_results
+    if params[:perspective] == 'project'
+      build_personal_project_details
+    elsif params[:perspective] == 'category'
+      build_personal_category_details
+    end
+  end
+  
+  def build_master_report_results # company scope 
+    # extract all. not limited to user_id. Give result from everyone in the company 
   end
   
   def build_personal_project_details
@@ -273,9 +279,6 @@ class Api::WorksController < Api::BaseApiController
                               0,
                   Rational( UTC_OFFSET , 24) )
                   
-    
-     
-    
     records = [] 
     works = []
     current_user_id = current_user.id

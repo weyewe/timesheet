@@ -23,28 +23,52 @@ class Api::WorksController < Api::BaseApiController
       
       # calendar
       
-    elsif params[:selectedRecordId].present?
-      project = Project.where(:id => params[:selectedRecordId]).first 
-      if project.nil?
-        @objects  = [] 
-        @total = 0 
-      else
-        @objects = Work.active_objects.where(:user_id => current_user.id, 
-                :project_id =>  project.id).
-                joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
-                
-        @total =         Work.active_objects.where(:user_id => current_user.id, 
-                        :project_id =>  project.id).count
+    elsif params[:selectedRecordId].present? and params[:viewer] == 'personal'
+      if params[:perspective] == 'project'
+        build_personal_project_details
+      elsif params[:perspective] == 'category'
+        build_personal_category_details
+      end 
+    elsif params[:selectedRecordId].present? and params[:viewer] == 'master'
+      if params[:perspective] == 'project'
+        build_master_project_details
+      elsif params[:perspective] == 'category'
+        build_master_category_details
       end
-      
-      
     else
       @objects = Work.active_objects.where(:user_id => current_user.id).joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
       @total = Work.active_objects.where(:user_id => current_user.id).count 
     end
-    
-    
-    # render :json => { :works => @objects , :total => @total , :success => true }
+  end
+  
+  def build_personal_project_details
+    project = Project.where(:id => params[:selectedRecordId]).first 
+    if project.nil?
+      @objects  = [] 
+      @total = 0 
+    else
+      @objects = Work.active_objects.where(:user_id => current_user.id, 
+              :project_id =>  project.id).
+              joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
+              
+      @total =         Work.active_objects.where(:user_id => current_user.id, 
+                      :project_id =>  project.id).count
+    end
+  end
+  
+  def build_personal_category_details
+    category = Category.where(:id => params[:selectedRecordId]).first 
+    if category.nil?
+      @objects  = [] 
+      @total = 0 
+    else
+      @objects = Work.active_objects.where(:user_id => current_user.id, 
+              :category_id =>  category.id).
+              joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
+              
+      @total =         Work.active_objects.where(:user_id => current_user.id, 
+                      :category_id =>  category.id).count
+    end
   end
 
   def create
@@ -73,10 +97,7 @@ class Api::WorksController < Api::BaseApiController
       msg = {
         :success => false, 
         :message => {
-          :errors => extjs_error_format( @object.errors ) 
-          # :errors => {
-          #   :name => "Nama tidak boleh bombastic"
-          # }
+          :errors => extjs_error_format( @object.errors )
         }
       }
       
@@ -175,39 +196,6 @@ class Api::WorksController < Api::BaseApiController
   end
   
   def reports
-    # render :json => { 
-    #     :store_config => {
-    #        fields: ['year', 'comedy', 'action', 'drama', 'thriller'],
-    #        data: [
-    #                {year: 2005, comedy: 34000000, action: 23890000, drama: 18450000, thriller: 20060000},
-    #                {year: 2006, comedy: 56703000, action: 38900000, drama: 12650000, thriller: 21000000},
-    #                {year: 2007, comedy: 42100000, action: 50410000, drama: 25780000, thriller: 23040000},
-    #                {year: 2008, comedy: 38910000, action: 56070000, drama: 24810000, thriller: 26940000}
-    #              ]
-    #     }  ,
-    #     :axes_fields => ['comedy', 'action', 'drama', 'thriller'],
-    #     :category_fields => ['year'],
-    #     :series_x_field => 'year',
-    #     :series_y_fields => ['comedy', 'action', 'drama', 'thriller'],
-    #     
-    # }
-    
-    # it is proven to be working.. 
-    # on the reportpanel
-    # afterrender: build the components: the chart and the list. 
-=begin
-  afterrender: 
-  panel.removeAll(); 
-  panel.buildComponents(); 
-  
-  refreshView: 
-  panel.removeAll();
-  panel.buildComponents(); 
-  
-  that's it. pretty much simple. lets' do it later. 
-  
-=end
-
     render :json => {
       :component_config => {
             :title  => 'Panel dynamically loaded',
@@ -219,75 +207,61 @@ class Api::WorksController < Api::BaseApiController
   end
   
   def project_reports
+    view_value = params[:viewValue].to_i  
+    date = parse_datetime_from_client_booking( params[:focusDate])
+    date =   DateTime.new( date.year , 
+                              date.month, 
+                              date.day, 
+                              0, 
+                              0, 
+                              0,
+                  Rational( UTC_OFFSET , 24) )
+                  
     
-    records = []
-    Project.all.each do |project|
-      records << {
-        :name => project.title, 
-        :data1 => project.works.sum("duration"),
-        :id => project.id
+     
+    
+    records = [] 
+    works = []
+    current_user_id = current_user.id
+    if view_value == VIEW_VALUE[:week]
+      starting_date = date - date.wday.days 
+      ending_date = starting_date + 7.days 
+      works = Work.active_objects.where{
+        (start_datetime.gte starting_date) & 
+        (start_datetime.lt ending_date ) & 
+        (user_id.eq current_user_id )
+      }
+      
+    elsif view_value == VIEW_VALUE[:month]
+      starting_date = date - date.mday.days 
+      
+      days_in_month = Time.days_in_month(date.month, date.year)
+      ending_date = starting_date + days_in_month.days
+   
+      works = Work.active_objects.where{
+        (start_datetime.gte starting_date) & 
+        (start_datetime.lt ending_date ) & 
+        (user_id.eq current_user_id )
       }
     end
     
-    # records = [
-    #   {
-    #     :name => 'Project 1',
-    #     :data1 => 350,
-    #     :id => 1 
-    #   },
-    #   {
-    #     :name => 'Project 2',
-    #     :data1 => 250,
-    #     :id => 2 
-    #   },
-    #   {
-    #     :name => 'Project 3',
-    #     :data1 => 100,
-    #     :id => 3
-    #   },
-    #   {
-    #     :name => 'Project 4',
-    #     :data1 => 180,
-    #     :id => 4 
-    #   },
-    #   {
-    #     :name => 'Project 5',
-    #     :data1 => 160,
-    #     :id => 5 
-    #   }
-    # ]
+    project_id_list = works.collect {|x| x.project_id}.uniq
+    
+    projects = Project.where(:id => project_id_list)
+    
+    projects.each do |project|
+      record = {}
+      record[:name] = project.title 
+      record[:data1] = works.where(:project_id => project.id).sum('duration')
+      record[:id] = project.id 
+      
+      records << record
+    end
+    
     
     render :json => { :records => records , :total => records.count, :success => true }
     
-    # render :json => {
-    #   :config => {
-    #     :xField => 'year',
-    #     :yField =>  [  'comedy', 'action', 'drama', 'thriller'],
-    #     :fields=> ['year', 'comedy', 'action', 'drama', 'thriller'],
-    #     :data => [
-    #       {
-    #         :name => 'Project 1',
-    #         :data1 => 350
-    #       },
-    #       {
-    #         :name => 'Project 2',
-    #         :data1 => 250
-    #       },
-    #       {
-    #         :name => 'Project 3',
-    #         :data1 => 100
-    #       },
-    #       {
-    #         :name => 'Project 4',
-    #         :data1 => 180
-    #       },
-    #       {
-    #         :name => 'Project 5',
-    #         :data1 => 160
-    #       }
-    #     ]
-    #   }
-    # }
+     
   end
   
   def category_reports

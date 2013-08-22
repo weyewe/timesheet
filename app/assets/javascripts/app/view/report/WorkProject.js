@@ -11,14 +11,10 @@ Ext.define('AM.view.report.WorkProject', {
 		currentViewType : 'week',
 		
 		buildChartAndList: function(){
-			console.log("Inside build CHart and List");
 			
 			var me = this; 
 			me.removeAll();
-			
-			console.log("initial items in the workprojectReport:");
-			console.log( me.items.length ) ;
-			 
+		 
 			me.setLoading(true);
 			
 			Ext.Ajax.request(
@@ -108,10 +104,11 @@ Ext.define('AM.view.report.WorkProject', {
 			});
 
 			me.loadStore();
+			
 
 			var chartConfig = {
 				xtype: 'chart',
-				flex : 3 ,
+				flex : 5 ,
         animate: true,
         store: me.store1,
         shadow: true,
@@ -122,14 +119,14 @@ Ext.define('AM.view.report.WorkProject', {
             label: {
                 renderer: Ext.util.Format.numberRenderer('0,0')
             },
-            title: 'Income',
+            title: 'Time Spent (mins)',
             grid: true,
             minimum: 0
         }, {
             type: 'Category',
             position: 'bottom',
             fields: ['name'],
-            title: 'Time'
+            title: 'Projects'
         }],
         series: [{
 						id : 'superSeries',
@@ -139,106 +136,41 @@ Ext.define('AM.view.report.WorkProject', {
             xField: 'name',
             yField: 'data1',
 						listeners:{
-							itemmousedown : function(obj) {
-								console.log("@itemmousedown");
-								console.log("The obj");
-								console.log(obj);
-								
-								console.log("currentViewType: ");
-								console.log(me.currentViewType);
-								console.log('=======\n')
-
+							itemmousedown : function(obj) { 
+								 
 								me.fireEvent('seriesClicked',  obj,  me.currentViewType  , me );
 							}
 						}
         }]
 			}
+			
+			// var chartWrapper = {
+			// 	xtype : 'container',
+			// 	layout : {
+			// 		type : 'vbox',
+			// 		align : 'stretch'
+			// 	},
+			// 	flex : 5 ,
+			// 	items: [
+			// 		{
+			// 			itemId : 'chartTitle',
+			// 			xtype: 'container',
+			// 			html : "The title",
+			// 			flex: 1 
+			// 		},
+			// 		chartConfig
+			// 	]
+			// }
 
-			return chartConfig ; 
+			return chartConfig ;
+			// return chartWrapper; 
 		},
-		
-		// 
-		// buildChart: function(config){
-		// 	console.log("The config: " ) ;
-		// 	console.log( config ) ;
-		// 	var me  = this;
-		// 	var store1 = Ext.create('Ext.data.JsonStore', {
-		// 	        fields: ['name', 'data1'],
-		// 	        data:  config['data']
-		// 	    });
-		// 	
-		// 	console.log("The store1");
-		// 	console.log( store1);
-		// 	
-		// 	
-		// 	var chart = Ext.create('Ext.chart.Chart', {
-		// 	            style: 'background:#fff',
-		// 	            animate: true,
-		// 	            shadow: true,
-		// 	            store: store1,
-		// 							flex: 1 ,    // this is the addition.. fucker
-		// 							
-		// 			 
-		// 							
-		// 							
-		// 	            axes: [{
-		// 	                type: 'Numeric',
-		// 	                position: 'left',
-		// 	                fields: ['data1'],
-		// 	                label: {
-		// 	                    renderer: Ext.util.Format.numberRenderer('0,0') 
-		// 	                },
-		// 	                title: 'Number of Mins',
-		// 	                grid: true,
-		// 	                minimum: 0
-		// 	            }, {
-		// 	                type: 'Category',
-		// 	                position: 'bottom',
-		// 	                fields: ['name'],
-		// 	                title: 'Project'
-		// 	            }],
-		// 	            series: [{
-		// 	                type:   'column' ,// 'column',
-		// 	                axis: 'left',
-		// 	                highlight: true,
-		// 	                tips: {
-		// 	                  trackMouse: true,
-		// 	                  width: 140,
-		// 	                  height: 28,
-		// 	                  renderer: function(storeItem, item) {
-		// 	                    this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data1') + ' $');
-		// 	                  }
-		// 	                },
-		// 	                // label: {
-		// 	                //   display: 'insideEnd',
-		// 	                //   'text-anchor': 'middle',
-		// 	                //     field: 'data1',
-		// 	                //     renderer: Ext.util.Format.numberRenderer('0'),
-		// 	                //     orientation: 'vertical',
-		// 	                //     color: '#333'
-		// 	                // },
-		// 	                xField: 'name',
-		// 	                yField: 'data1',
-		// 									listeners:{
-		// 										itemmousedown : function(obj) {
-		// 
-		// 											me.fireEvent('seriesClicked',  obj,  me.currentViewType  );
-		// 										}
-		// 									}
-		// 	            }]
-		// 	        });
-		// 	console.log("The composed chart:");
-		// 	console.log( chart ) ;
-		// 	this.add( chart ) ;
-		// },
 		 
 	  
 		loadStore: function(  ){
 			var me = this; 
 			var date = me.currentFocusDate; 
-			
-			console.log("The date:" ) ;
-			console.log( date ) ;
+			 
 			var viewType = me.currentViewType; 
 			me.setLoading( true ) ; 
 			var viewValue = 0;  // default viewType == week 
@@ -255,9 +187,39 @@ Ext.define('AM.view.report.WorkProject', {
 				},
 				callback : function(records, options, success){
 					me.setLoading(false);
-					result = me.fireEvent('chartLoaded', Ext.Date.format( date, 'Y-m-d H:i:s'));
+					me.fireEvent('chartLoaded', Ext.Date.format( date, 'Y-m-d H:i:s'));
+					me.up("container").setTitle("By Project: " + me.getDurationText() );
 				}
 			});
+			
+		},
+		
+		getDurationText : function(){
+			var me = this; 
+			if(!me.currentFocusDate || !me.currentViewType){
+				return;
+			}
+			
+			var startDate = '';
+			var endDate = '';
+			
+			if( me.currentViewType === 'week'){
+				var numberOfDaysFromSunday = me.currentFocusDate.getDay(); 
+				var sundayDayNumber = me.currentFocusDate.getDate() - numberOfDaysFromSunday;
+				var saturdayDayNumber = sundayDayNumber + 6 ; 
+				
+				var sundayDate = new Date( me.currentFocusDate.getFullYear(), me.currentFocusDate.getMonth() -1 , sundayDayNumber );
+				var saturdayDate = new Date( me.currentFocusDate.getFullYear(), me.currentFocusDate.getMonth() -1 , saturdayDayNumber );
+				
+				return  Ext.Date.format( sundayDate, 'Y-m-d  ') + " to " + Ext.Date.format( saturdayDate, 'Y-m-d  ');
+				
+			}else if(me.currentViewType === 'month'){
+				var firstDayDate = new Date( me.currentFocusDate.getFullYear(), me.currentFocusDate.getMonth() -1 , 1 );
+				var lastDayDate = new Date( me.currentFocusDate.getFullYear(), me.currentFocusDate.getMonth()  , 0 );
+				
+				return  Ext.Date.format( firstDayDate, 'Y-m-d  ') + " to " + Ext.Date.format( lastDayDate, 'Y-m-d  ');
+			}
+			
 		},
 		 
 		buildList: function(){

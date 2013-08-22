@@ -43,57 +43,41 @@ Ext.define('AM.controller.WorkProjectReports', {
   },
 
 	onBeforeRender: function(panel ){
-		console.log("onBeforeRender");
+		// console.log("onBeforeRender");
 		// panel.buildChartAndList();
+		var list = this.getList(); 
+		list.store.loadData([],false);
 	},
 
 	clearList: function(){
 		console.log("from the clearList");
+		var list = this.getList(); 
+		list.store.loadData([],false);
+		list.setTitle('');
+		// list.store.getProxy().extraParams = {};
 	},
 	
 	updateList: function(clickedPoint, viewType, chart){
-		console.log("from the updateList");
-		console.log("The series is clicked");
-		console.log("clickedPoint");
-		console.log(clickedPoint);
-		console.log("\nviewType:");
-		console.log( viewType );
 		var list = this.getList(); 
-		// var selectedDateArray = clickedPoint.value[0].split('/');
-		// var selectedDate = new Date(
-		// 		selectedDateArray[0],
-		// 		selectedDateArray[1]-1, // in javascript, month starts from 0
-		// 		selectedDateArray[2]
-		// 	);
-		// 
-		
-		// get the store. 
-		// for the one with given field, what is the ID?
 		
 		var recordName = clickedPoint.value[0];
+		
+		// console.log("The recordName: ");
+		// console.log(recordName);
 		result = chart.store1.queryBy(function(record){
-			console.log("\n=========");
-			console.log("The record is ");
-			console.log( record ); 
-			console.log( record.get("name"));
-			console.log("clickedPoint");
-			console.log( clickedPoint.value[0]);
 			return record.get("name") === recordName;
-			
 		})
 		
-		console.log("The result:");
-		console.log( result ) ;
- 
-		if( result.length !==0 ){
-			console.log("The firs result");
-			console.log( result.length);
-			console.log( result.items[0].get('name') );
-			console.log("The id:  " + result.items[0].get('id'));
-		}else{
-			return;
+		// console.log("The store: ");
+		// console.log( chart.store1);
+		
+		if( result.length === 0 ){
+			Ext.Msg.alert("Error", "No series selected");
+			return
 		}
 		
+		// console.log("The result: ");
+		// console.log( result ) ;
 		
 		
 		var viewValue = 0;
@@ -105,16 +89,14 @@ Ext.define('AM.controller.WorkProjectReports', {
 		
 		list.store.getProxy().extraParams = {
 		    viewValue : viewValue,
-				selectedRecordId: result.items[0].get('id')
+				selectedRecordId: result.items[0].get('id'),
+				perspective: 'project',
+				viewer: 'personal'
 		};
 		
 		
 		viewport.setLoading(true);
 		list.store.load({
-			// params: {
-			// 	viewValue : viewValue,
-			// 	selectedRecordId: result.items[0].get('id')
-			// },
 			callback : function(records, options, success){
 				list.setTitle(recordName );
 				viewport.setLoading(false);
@@ -124,7 +106,6 @@ Ext.define('AM.controller.WorkProjectReports', {
 	},
 	
 	onActivePanel: function(){
-		console.log("from the onActivePanel");
 	},
 	
 	onAfterRender: function(panel){
@@ -134,20 +115,12 @@ Ext.define('AM.controller.WorkProjectReports', {
 	
 	
 	onDestroy: function(){
-		console.log("from the onDestroy");
-		
 	},
 	
 	onBeforeDestroy: function(){
-		console.log("from the onBeforeDestroy");
-		// normalize the extraParams
 		var list = this.getList(); 
 		list.store.getProxy().extraParams = {};
 		
 	},
-	
-
-
-
 
 });

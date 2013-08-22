@@ -59,6 +59,9 @@ Ext.define("AM.view.Constants",{
 	switchMaster : 2 ,  
 });
 
+
+
+
 Ext.define("AM.currentUser",{
 	singleton	: true,
 	
@@ -67,8 +70,6 @@ Ext.define("AM.currentUser",{
 	
 	GET_USERS_URL	:  "/users/all",
 	GET_USER_URL	: "/users/get",
-	
-	
 	
 	hasRole : function(controller, action){
 		// console.log("Inside the hasRole");
@@ -190,3 +191,4 @@ Ext.onReady(function(){
 });
 
  
+

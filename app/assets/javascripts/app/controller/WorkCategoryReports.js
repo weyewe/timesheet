@@ -1,27 +1,27 @@
-Ext.define('AM.controller.WorkProjectReports', {
+Ext.define('AM.controller.WorkCategoryReports', {
   extend: 'Ext.app.Controller',
 
   // stores: ['Incomes'],
   // models: ['Income'],
 
   views: [
-    'report.WorkProject',
-		'report.workproject.List',
+    'report.WorkCategory',
+		'report.workcategory.List',
 		'Viewport'
   ],
 
 	refs: [
 		{
 			ref: 'list',
-			selector: 'workprojectList'
+			selector: 'workcategoryList'
 		} ,
 		{
 			ref: 'viewport',
 			selector: 'vp'
 		},
 		{
-			ref : 'workProjectReport',
-			selector : 'workProjectReport'
+			ref : 'workCategoryReport',
+			selector : 'workCategoryReport'
 		} 
 	],
 
@@ -29,7 +29,7 @@ Ext.define('AM.controller.WorkProjectReports', {
  
 	
     this.control({
-      'workProjectReport': {
+      'workCategoryReport': {
         'chartLoaded': this.clearList ,
 				'seriesClicked' : this.updateList,
 				'activate' : this.onActivePanel,
@@ -92,7 +92,7 @@ Ext.define('AM.controller.WorkProjectReports', {
 		list.store.getProxy().extraParams = {
 		    viewValue : viewValue,
 				selectedRecordId: result.items[0].get('id'),
-				perspective: 'project',
+				perspective: 'category',
 				viewer: 'personal'
 		};
 		

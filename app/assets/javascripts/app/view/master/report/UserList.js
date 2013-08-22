@@ -7,15 +7,8 @@ Ext.define('AM.view.master.report.UserList' ,{
 
 	initComponent: function() {
 		this.columns = [
-			{
-				xtype : 'templatecolumn',
-				text : "User List",
-				flex : 1,
-				tpl : '<b>{name}</b>' + '<br />'  +   '<br />'  + 
-							'<b>{email}</b>'   + '<br />'  + '<br />'  
-			},
-			
-			  
+			{ header: ' Nama',  dataIndex: 'name',  flex: 1 , sortable: false} ,
+			{ header: ' Email',  dataIndex: 'email',  flex: 1 , sortable: false}
 	
 		];
  

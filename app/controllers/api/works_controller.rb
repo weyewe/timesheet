@@ -1,6 +1,51 @@
 class Api::WorksController < Api::BaseApiController
   
-  # for the list, not the charting. 
+=begin
+  We need to query many works for reporting purposes. 
+  
+  PERSONAL REPORT 
+    Params that is  needed: params[:viewer] => 'personal'
+    => This requires 2 params value: 
+      1. selectedRecordId  ( the project_id or the category_id, depending on the perspective) 
+      2. perspective  => 'project' or 'category'
+    ByProject
+      Select a given project for current_user in a given timeframe
+      Show the works ever done in that time frame & project 
+    ByCategory
+      Select a given category for current_user in a given timeframe
+      Show the works ever done in that time frame & category 
+  
+  
+  MASTER REPORT 
+    Params that is  needed: params[:viewer] => 'master'
+    EMPLOYEE REPORT
+      1. selectedParentRecordId  => user_id 
+      2. parentRecordType => 'project' or 'user' or 'category'
+      3. selectedRecordId 
+      4. perspective 'project' or 'category' or 'user'  (x-axis on the chart)
+      5. companyView => true or false.. use the perspective to give constraint. 
+      
+      By Project
+        Select a user to view his time spent ( on which project)
+        Select project to see the details 
+      By Category 
+        Select a user to view his time spent ( on what kind of work category)
+        Select category to see the details 
+        
+    PROJECT REPORT
+      By User
+        Select a project to view the details
+        Select a user to view the works 
+      By Category 
+        Select a project to view the details 
+        Select the category to view the works 
+    
+    COMPANY REPORT
+      By User
+        no selectedParentRecord 
+      By Category 
+      By Project 
+=end
   def index
     
     if params[:livesearch].present? 
@@ -8,7 +53,11 @@ class Api::WorksController < Api::BaseApiController
     elsif params[:selectedRecordId].present? and params[:viewer] == 'personal'
       build_personal_report_results # current_user scope 
     elsif params[:selectedRecordId].present? and params[:viewer] == 'master'
+      # on behalf of the employee.
+      # it requires the params selectedParentRecordId
       build_master_report_results  # whole company scope 
+      
+      # what if we want on behalf of project? the selectedParentRecord == project? 
     else
       @objects = Work.active_objects.where(:user_id => current_user.id).joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
       @total = Work.active_objects.where(:user_id => current_user.id).count 
@@ -44,7 +93,29 @@ class Api::WorksController < Api::BaseApiController
   end
   
   def build_master_report_results # company scope 
-    # extract all. not limited to user_id. Give result from everyone in the company 
+    if params[:perspective] == 'project'
+      build_master_project_details
+    elsif params[:perspective] == 'category'
+      build_master_category_details
+    end
+  end
+  
+  # we need the one with parentPerspective == Project. 
+  
+  # parentPerspective = user 
+  def build_master_project_details
+    project = Project.where(:id => params[:selectedRecordId]).first 
+    if project.nil?
+      @objects  = [] 
+      @total = 0 
+    else
+      @objects = Work.active_objects.where(:user_id => current_user.id, 
+              :project_id =>  project.id).
+              joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
+              
+      @total =         Work.active_objects.where(:user_id => current_user.id, 
+                      :project_id =>  project.id).count
+    end
   end
   
   def build_personal_project_details
@@ -282,6 +353,12 @@ class Api::WorksController < Api::BaseApiController
     records = [] 
     works = []
     current_user_id = current_user.id
+    
+    # in the master report 
+    if params[:selectedRecordId].present? and params[:selectedRecordId].to_i != 0 
+      current_user_id  = params[:selectedRecordId].to_i
+    end
+    
     if view_value == VIEW_VALUE[:week]
       starting_date = date - date.wday.days 
       ending_date = starting_date + 7.days 

@@ -34,7 +34,7 @@ Ext.define('AM.controller.MasterEmployeeWorkCategoryReports', {
  		console.log("init controller for master.employee.WorkCategoryReports");
 	
     this.control({
-      'masterreportemployeeWorkCategoryReport': {
+      'masterreportemployeeWorkCategoryReport chartInspect': {
         'chartLoaded': this.clearList ,
 				'seriesClicked' : this.updateList,
 				'activate' : this.onActivePanel,
@@ -55,8 +55,25 @@ Ext.define('AM.controller.MasterEmployeeWorkCategoryReports', {
 		var recordList = this.getRecordList();
 		recordList.store.load();
 	},
-	recordSelectionChange: function(){
+	recordSelectionChange: function(record){
 		console.log("Record selection change");
+		console.log("The record  is : "  );
+		console.log( record ) 
+		console.log( record.selected ) ;
+		var recordList = this.getRecordList(); 
+		var report = this.getWorkCategoryReport();
+		if (recordList.getSelectionModel().hasSelection()) {
+		   var row = recordList.getSelectionModel().getSelection()[0];
+			console.log("The selected record id");
+		   console.log(row.get('id'));
+		
+			var id = row.get("id");
+			var chartInspect = report.down('chartInspect');
+			chartInspect.selectedRecordId = id ;
+			chartInspect.loadStore();
+		}
+		// var report = this.getWorkCategoryReport();
+		// report.loadStore();
 	},
 
 	onBeforeRender: function(panel ){
@@ -106,13 +123,25 @@ Ext.define('AM.controller.MasterEmployeeWorkCategoryReports', {
 			viewValue = 1;
 		}
 		
+		var selectedParentRecordId = null;
+		var recordList = this.getRecordList();  
+		if (recordList.getSelectionModel().hasSelection()) {
+		   var row = recordList.getSelectionModel().getSelection()[0];
+			console.log("The selected parent record id");
+		   console.log(row.get('id'));
+		
+			var id = row.get("id"); 
+			selectedParentRecordId = id ; 
+		}
+		
 		var viewport = this.getViewport();
 		
 		list.store.getProxy().extraParams = {
 		    viewValue : viewValue,
 				selectedRecordId: result.items[0].get('id'),
 				perspective: 'category',
-				viewer: 'personal'
+				viewer: 'master',
+				selectedParentRecordId: selectedParentRecordId
 		};
 		
 		

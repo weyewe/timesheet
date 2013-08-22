@@ -3,7 +3,7 @@ Ext.define('AM.view.master.report.employee.WorkCategory', {
     alias: 'widget.masterreportemployeeWorkCategoryReport',
 
 		layout : {
-			type : 'hbox',
+			type : 'vbox',
 			align : 'stretch'
 		},
 		header: false, 
@@ -19,7 +19,7 @@ Ext.define('AM.view.master.report.employee.WorkCategory', {
 				xtype : 'masterreportuserList',
 				// xtype : 'container',
 				// html : "Awesome shite",
-				flex: 1 
+				flex: 2 
 			},
 			me.buildChartInspect() ];
 			
@@ -42,7 +42,7 @@ Ext.define('AM.view.master.report.employee.WorkCategory', {
 					yAxisLabel : "Time Spent (mins)",
 					xAxisLabel : "Category",
 					panelTitle: "Category",
-					flex: 5,
+					flex: 7,
 					chartListWrapperXType: 'masterreportemployeeWorkCategoryReport',
 					autoChartLoad: false 
 				} 

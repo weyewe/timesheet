@@ -44,11 +44,14 @@ Ext.define("AM.controller.Authorization", {
 		var email = currentUser['email'];
 		
 		
-		console.log("The email: " );
-		console.log( email ) ;
+		// console.log("The email: " );
+		// console.log( email ) ;
 		var userMenu = me.getUserMenu();
-		console.log(userMenu);
-		userMenu.setText( email );
+		// var userMenu = Ext.ComponentQuery.query("navigation #optionsMenu")[0]
+		userMenu.setText( email ) ;
+		
+		// console.log(userMenu);
+		// userMenu.setText( "This is awesome bastard" );
 		
 		// get the content.. set Active Item 1 
 		// this.getViewport().down('content').getLayout().setActiveItem(1);

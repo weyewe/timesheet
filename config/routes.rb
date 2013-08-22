@@ -22,6 +22,8 @@ Timesheet::Application.routes.draw do
     resources :app_users
     resources :categories 
     resources :works
+    
+     
   end
   
   get 'work_reports' => 'works#reports', :as => :work_reports

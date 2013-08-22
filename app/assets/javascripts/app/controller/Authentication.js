@@ -192,8 +192,8 @@ Ext.define("AM.controller.Authentication", {
 	
 	showProtectedArea : function(){
 		var me = this; 
-		me.getViewport().fireEvent("authenticateSuccess");
 		me.getViewport().getLayout().setActiveItem( 1) ;
+		me.getViewport().fireEvent("authenticateSuccess");
 	},
 	showLoginForm : function(){
 		var me = this;

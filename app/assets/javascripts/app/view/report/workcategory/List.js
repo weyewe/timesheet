@@ -11,7 +11,7 @@ Ext.define('AM.view.report.workcategory.List' ,{
 				xtype : 'templatecolumn',
 				text : "Info",
 				flex : 1,
-				tpl : '<b>{project_name}</b>' + '<br />'  + 
+				tpl : '<b>{project_title}</b>' + '<br />'  + 
 							'Duration: <b>{duration}</b> mins'   + '<br />'  +  '<br />'  + 
 							'{description}'
 			},

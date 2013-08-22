@@ -20,6 +20,7 @@ Ext.define('AM.view.ChartInspect', {
 		listXType: 'workprojectList',
 		xAxisLabel : "Project",
 		yAxisLabel : 'Time Spent (mins)',
+		panelTitle: "Project",
 	 
 	 
 	
@@ -105,7 +106,7 @@ Ext.define('AM.view.ChartInspect', {
 				callback : function(records, options, success){
 					me.setLoading(false);
 					me.fireEvent('chartLoaded', Ext.Date.format( date, 'Y-m-d H:i:s'));
-					me.up("container").setTitle("By Project: " + me.getDurationText() );
+					me.up("container").setTitle("By "+ me.panelTitle + ": " + me.getDurationText() );
 				}
 			});
 			

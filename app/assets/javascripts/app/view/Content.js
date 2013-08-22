@@ -13,7 +13,7 @@ Ext.define('AM.view.Content', {
 		
 		items : [
 			{
-				xtype : 'personalreportProcess'
+				xtype : 'personalProcessPanel'
 			},
 			
 			

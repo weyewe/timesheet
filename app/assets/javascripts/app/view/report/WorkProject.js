@@ -13,5 +13,6 @@ Ext.define('AM.view.report.WorkProject', {
 		chartStoreUrl :  'api/work_project_reports', 
 		listXType: 'workprojectList',
 		yAxisLabel : "Time Spent (mins)",
-		xAxisLabel : "Project"
+		xAxisLabel : "Project",
+		panelTitle : "Project"
 });

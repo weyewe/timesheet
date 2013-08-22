@@ -13,5 +13,6 @@ Ext.define('AM.view.report.WorkCategory', {
 		chartStoreUrl :  'api/work_category_reports', 
 		listXType: 'workcategoryList',
 		yAxisLabel : "Time Spent (mins)",
-		xAxisLabel : "Category"
+		xAxisLabel : "Category",
+		panelTitle: "Category"
 });

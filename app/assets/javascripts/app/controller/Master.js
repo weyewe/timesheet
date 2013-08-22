@@ -132,19 +132,7 @@ Ext.define("AM.controller.Master", {
 						
 					]
       },
-			{ 
-          text:'By Project Duplicate', 
-          viewClass:'AM.view.report.WorkProjectDuplicate', 
-          leaf:true, 
-          iconCls:'text' ,
-					conditions : [
-						{
-							controller : 'works',
-							action : 'reports'
-						}
-						
-					]
-      },
+	
 			{ 
           text:'By Category', 
           viewClass:'AM.view.report.WorkCategory', 

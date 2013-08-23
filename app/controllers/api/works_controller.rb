@@ -118,7 +118,6 @@ class Api::WorksController < Api::BaseApiController
     # 1. selectedParentRecordId  => user_id 
     # 2. parentRecordType => 'project' or 'user' or 'category'
     # 3. selectedRecordId
-    puts "Build master project details\n"*10
     
     project = Project.where(:id => params[:selectedRecordId]).first 
     view_value = params[:viewValue].to_i  
@@ -132,11 +131,9 @@ class Api::WorksController < Api::BaseApiController
                   Rational( UTC_OFFSET , 24) )
                   
     if project.nil?
-      puts "THe project is nil"
       @objects  = [] 
       @total = 0 
     else
-      puts "There is project"
       
       starting_date = 0 
       ending_date = 0 
@@ -150,10 +147,6 @@ class Api::WorksController < Api::BaseApiController
         ending_date = starting_date + days_in_month.days
       end
       
-      
-      puts "starting_date: #{starting_date}"
-      puts "Ending_date: #{ending_date}"
-      puts "project.works.count: #{project.works.count}"
       if params[:parentRecordType] == 'user'
         selectedParentRecordId = params[:selectedParentRecordId].to_i
         @objects  =        Work.active_objects.where{
@@ -163,7 +156,6 @@ class Api::WorksController < Api::BaseApiController
           (project_id.eq project.id )
         }.joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
 
-        puts "Total objects: #{@objects.count}"
 
         @total =                   Work.active_objects.where{
           (start_datetime.gte starting_date) & 
@@ -224,6 +216,22 @@ class Api::WorksController < Api::BaseApiController
           (start_datetime.gte starting_date) & 
           (start_datetime.lt ending_date ) & 
           (user_id.eq selectedParentRecordId ) & 
+          (category_id.eq category.id )
+          }.count
+      elsif params[:parentRecordType] == 'project'
+        selectedParentRecordId = params[:selectedParentRecordId].to_i
+        @objects  =        Work.active_objects.where{
+          (start_datetime.gte starting_date) & 
+          (start_datetime.lt ending_date ) & 
+          (project_id.eq  selectedParentRecordId ) & 
+          (category_id.eq category.id )
+        }.joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
+
+
+        @total =                   Work.active_objects.where{
+          (start_datetime.gte starting_date) & 
+          (start_datetime.lt ending_date ) & 
+          (project_id.eq selectedParentRecordId ) & 
           (category_id.eq category.id )
           }.count
       end
@@ -540,22 +548,30 @@ class Api::WorksController < Api::BaseApiController
       # personal view 
       if params[:parentRecordType] == 'user'
         puts "Inside viewer personal, parentType == user"
-        selectedRecordId = current_user.id
+        selectedParentRecordId = current_user.id
         works = Work.active_objects.where{
           (start_datetime.gte starting_date) & 
           (start_datetime.lt ending_date ) & 
-          (user_id.eq selectedRecordId )
+          (user_id.eq selectedParentRecordId )
         }
         puts "Total works: #{works.count}"
       end
     elsif params[:viewer] == 'master'
       puts "Inside viewer master"
       if params[:parentRecordType] == 'user'
-        selectedRecordId = params[:selectedParentRecordId]
+        selectedParentRecordId = params[:selectedParentRecordId]
         works = Work.active_objects.where{
           (start_datetime.gte starting_date) & 
           (start_datetime.lt ending_date ) & 
-          (user_id.eq selectedRecordId )
+          (user_id.eq selectedParentRecordId )
+        }
+      elsif params[:parentRecordType] == 'project'
+        puts "Inside master viewer, parentRecordType: project"
+        selectedParentRecordId = params[:selectedParentRecordId]
+        works = Work.active_objects.where{
+          (start_datetime.gte starting_date) & 
+          (start_datetime.lt ending_date ) & 
+          (project_id.eq selectedParentRecordId )
         }
       end
     end

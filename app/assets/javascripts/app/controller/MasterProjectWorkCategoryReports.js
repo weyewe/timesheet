@@ -63,8 +63,9 @@ Ext.define('AM.controller.MasterProjectWorkCategoryReports', {
 			var row = recordList.getSelectionModel().getSelection()[0];
 			var id = row.get("id");
 			var chartInspect = report.down('chartInspect');
-			chartInspect.selectedRecordId = id ;
-			chartInspect.parentRecordType = 'project'
+			chartInspect.selectedParentRecordId = id ;
+			chartInspect.parentRecordType = 'project';
+			chartInspect.viewer = 'master';
 			chartInspect.loadStore();
 		}
 		// var report = this.getWorkCategoryReport();

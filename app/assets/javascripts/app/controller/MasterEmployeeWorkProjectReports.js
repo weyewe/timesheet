@@ -1,12 +1,12 @@
-Ext.define('AM.controller.MasterEmployeeWorkCategoryReports', {
+Ext.define('AM.controller.MasterEmployeeWorkProjectReports', {
   extend: 'Ext.app.Controller',
 
   // stores: ['Incomes'],
   // models: ['Income'],
 
   views: [
-    'master.report.employee.WorkCategory',
-		'report.workcategory.List',
+    'master.report.employee.WorkProject',
+		'report.workproject.List',
 		'master.report.UserList',
 		'Viewport'
   ],
@@ -14,11 +14,11 @@ Ext.define('AM.controller.MasterEmployeeWorkCategoryReports', {
 	refs: [
 		{
 			ref: 'list',
-			selector: 'workcategoryList'
+			selector: 'workprojectList'
 		},
 		{
 			ref: 'recordList',
-			selector: 'masterreportemployeeWorkCategoryReport masterreportuserList'
+			selector: 'masterreportemployeeWorkProjectReport masterreportuserList'
 		},
 		{
 			ref: 'viewport',
@@ -26,15 +26,15 @@ Ext.define('AM.controller.MasterEmployeeWorkCategoryReports', {
 		},
 		{
 			ref : 'report',
-			selector : 'masterreportemployeeWorkCategoryReport'
+			selector : 'masterreportemployeeWorkProjectReport'
 		} 
 	],
 
   init: function() {
- 		console.log("init controller for master.employee.WorkCategoryReports");
+ 		console.log("init controller for master.employee.WorkProjectReports");
 	
     this.control({
-      'masterreportemployeeWorkCategoryReport chartInspect': {
+      'masterreportemployeeWorkProjectReport chartInspect': {
         'chartLoaded': this.clearList ,
 				'seriesClicked' : this.updateList,
 				'activate' : this.onActivePanel,
@@ -43,7 +43,7 @@ Ext.define('AM.controller.MasterEmployeeWorkCategoryReports', {
 				'beforedestroy' : this.onBeforeDestroy,
 				'beforerender': this.onBeforeRender
       } ,
-      'masterreportemployeeWorkCategoryReport masterreportuserList': {
+      'masterreportemployeeWorkProjectReport masterreportuserList': {
         selectionchange: this.recordSelectionChange,
 				afterrender : this.loadRecordList,
       },
@@ -57,16 +57,18 @@ Ext.define('AM.controller.MasterEmployeeWorkCategoryReports', {
 	},
 	
 	recordSelectionChange: function(record){
+		console.log("WorkProjectReports#recordSelectionChange")
 		var recordList = this.getRecordList(); 
 		var report = this.getReport();
 		if (recordList.getSelectionModel().hasSelection()) {
 			var row = recordList.getSelectionModel().getSelection()[0];
 			var id = row.get("id");
 			var chartInspect = report.down('chartInspect');
+			console.log("The selected id: " + id);
 			chartInspect.selectedRecordId = id ;
 			chartInspect.loadStore();
 		}
-		// var report = this.getWorkCategoryReport();
+		// var report = this.getWorkProjectReport();
 		// report.loadStore();
 	},
 
@@ -117,7 +119,7 @@ Ext.define('AM.controller.MasterEmployeeWorkCategoryReports', {
 		list.store.getProxy().extraParams = {
 		    viewValue : viewValue,  // for the date 
 				selectedRecordId: result.items[0].get('id'), // for the perspective's object id 
-				perspective: 'category',
+				perspective: 'project',
 				viewer: 'master',
 				selectedParentRecordId: selectedParentRecordId,
 				parentRecordType : 'user',

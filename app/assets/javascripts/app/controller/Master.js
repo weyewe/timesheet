@@ -120,8 +120,20 @@ Ext.define("AM.controller.Master", {
     iconCls:'text-folder', 
     expanded: true,
 		children : [
-			
-	
+	 
+			{ 
+	        text:'By Project', 
+	        viewClass:'AM.view.master.report.employee.WorkProject', 
+	        leaf:true, 
+	        iconCls:'text' ,
+					conditions : [
+						{
+							controller : 'works',
+							action : 'reports'
+						}
+					
+					]
+	    },
 			{ 
           text:'By Category', 
           viewClass:'AM.view.master.report.employee.WorkCategory', 
@@ -134,7 +146,8 @@ Ext.define("AM.controller.Master", {
 						}
 						
 					]
-      }
+      },
+			
 		]
 		
 	},

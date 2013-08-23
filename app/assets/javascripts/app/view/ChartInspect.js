@@ -90,7 +90,7 @@ Ext.define('AM.view.ChartInspect', {
 							itemmousedown : function(obj) { 
 								 
 								me.fireEvent('seriesClicked',  obj,  me.currentViewType  , me );
-								console.log("The series is clicked");
+								console.log("ChartInspect: The series is clicked");
 							}
 						}
         }]

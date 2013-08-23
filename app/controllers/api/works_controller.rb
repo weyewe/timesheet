@@ -118,21 +118,62 @@ class Api::WorksController < Api::BaseApiController
     # 1. selectedParentRecordId  => user_id 
     # 2. parentRecordType => 'project' or 'user' or 'category'
     # 3. selectedRecordId
+    puts "Build master project details\n"*10
     
     project = Project.where(:id => params[:selectedRecordId]).first 
+    view_value = params[:viewValue].to_i  
+    date = parse_datetime_from_client_booking( params[:focusDate])
+    date =   DateTime.new( date.year , 
+                              date.month, 
+                              date.day, 
+                              0, 
+                              0, 
+                              0,
+                  Rational( UTC_OFFSET , 24) )
+                  
     if project.nil?
+      puts "THe project is nil"
       @objects  = [] 
       @total = 0 
     else
+      puts "There is project"
       
-      if params[:parentRecordType] == 'user'
-        @objects = Work.active_objects.where(:user_id => params[:selectedParentRecordId], 
-                :project_id =>  project.id).
-                joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
-
-        @total =         Work.active_objects.where(:user_id => params[:selectedParentRecordId], 
-                        :project_id =>  project.id).count
+      starting_date = 0 
+      ending_date = 0 
+      
+      if view_value == VIEW_VALUE[:week]
+        starting_date = date - date.wday.days 
+        ending_date = starting_date + 7.days  
+      elsif view_value == VIEW_VALUE[:month]
+        starting_date = date - date.mday.days 
+        days_in_month = Time.days_in_month(date.month, date.year)
+        ending_date = starting_date + days_in_month.days
       end
+      
+      
+      puts "starting_date: #{starting_date}"
+      puts "Ending_date: #{ending_date}"
+      puts "project.works.count: #{project.works.count}"
+      if params[:parentRecordType] == 'user'
+        selectedParentRecordId = params[:selectedParentRecordId].to_i
+        @objects  =        Work.active_objects.where{
+          (start_datetime.gte starting_date) & 
+          (start_datetime.lt ending_date ) & 
+          (user_id.eq  selectedParentRecordId ) & 
+          (project_id.eq project.id )
+        }.joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
+
+        puts "Total objects: #{@objects.count}"
+
+        @total =                   Work.active_objects.where{
+          (start_datetime.gte starting_date) & 
+          (start_datetime.lt ending_date ) & 
+          (user_id.eq selectedParentRecordId ) & 
+          (project_id.eq project.id )
+          }.count
+      end
+      
+      
       
       
     end
@@ -434,6 +475,7 @@ class Api::WorksController < Api::BaseApiController
   end
   
   def project_reports
+    puts "inside project reports"
     view_value = params[:viewValue].to_i  
     date = parse_datetime_from_client_booking( params[:focusDate])
     date =   DateTime.new( date.year , 
@@ -450,6 +492,12 @@ class Api::WorksController < Api::BaseApiController
     records = [] 
     works = []
     current_user_id = current_user.id
+    
+    if params[:selectedRecordId].present? and params[:selectedRecordId].to_i != 0 
+      current_user_id  = params[:selectedRecordId].to_i
+    end
+    
+    
     if view_value == VIEW_VALUE[:week]
       starting_date = date - date.wday.days 
       ending_date = starting_date + 7.days 

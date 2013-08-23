@@ -1,24 +1,24 @@
-Ext.define('AM.controller.MasterEmployeeWorkProjectReports', {
+Ext.define('AM.controller.MasterProjectWorkCategoryReports', {
   extend: 'Ext.app.Controller',
 
   // stores: ['Incomes'],
   // models: ['Income'],
 
   views: [
-    'master.report.employee.WorkProject',
-		'report.workproject.List',
-		'master.report.UserList',
+    'master.report.project.WorkCategory',
+		'report.workcategory.List',
+		'master.report.ProjectList',
 		'Viewport'
   ],
 
 	refs: [
 		{
 			ref: 'list',
-			selector: 'workprojectList'
+			selector: 'workcategoryList'
 		},
 		{
 			ref: 'recordList',
-			selector: 'masterreportemployeeWorkProjectReport masterreportuserList'
+			selector: 'masterreportprojectWorkCategoryReport masterreportprojectList'
 		},
 		{
 			ref: 'viewport',
@@ -26,15 +26,15 @@ Ext.define('AM.controller.MasterEmployeeWorkProjectReports', {
 		},
 		{
 			ref : 'report',
-			selector : 'masterreportemployeeWorkProjectReport'
+			selector : 'masterreportprojectWorkCategoryReport'
 		} 
 	],
 
   init: function() {
- 		console.log("init controller for master.employee.WorkProjectReports");
+ 		console.log("init controller for master.project.WorkCategoryReports");
 	
     this.control({
-      'masterreportemployeeWorkProjectReport chartInspect': {
+      'masterreportprojectWorkCategoryReport chartInspect': {
         'chartLoaded': this.clearList ,
 				'seriesClicked' : this.updateList,
 				'activate' : this.onActivePanel,
@@ -43,7 +43,7 @@ Ext.define('AM.controller.MasterEmployeeWorkProjectReports', {
 				'beforedestroy' : this.onBeforeDestroy,
 				'beforerender': this.onBeforeRender
       } ,
-      'masterreportemployeeWorkProjectReport masterreportuserList': {
+      'masterreportprojectWorkCategoryReport masterreportprojectList': {
         selectionchange: this.recordSelectionChange,
 				afterrender : this.loadRecordList,
       },
@@ -57,20 +57,17 @@ Ext.define('AM.controller.MasterEmployeeWorkProjectReports', {
 	},
 	
 	recordSelectionChange: function(record){
-		console.log("WorkProjectReports#recordSelectionChange")
 		var recordList = this.getRecordList(); 
 		var report = this.getReport();
 		if (recordList.getSelectionModel().hasSelection()) {
 			var row = recordList.getSelectionModel().getSelection()[0];
 			var id = row.get("id");
 			var chartInspect = report.down('chartInspect');
-			console.log("The selected id: " + id);
-			chartInspect.selectedParentRecordId = id ;
-			chartInspect.parentRecordType = 'user';
-			chartInspect.viewer = 'master';
+			chartInspect.selectedRecordId = id ;
+			chartInspect.parentRecordType = 'project'
 			chartInspect.loadStore();
 		}
-		// var report = this.getWorkProjectReport();
+		// var report = this.getWorkCategoryReport();
 		// report.loadStore();
 	},
 
@@ -121,10 +118,10 @@ Ext.define('AM.controller.MasterEmployeeWorkProjectReports', {
 		list.store.getProxy().extraParams = {
 		    viewValue : viewValue,  // for the date 
 				selectedRecordId: result.items[0].get('id'), // for the perspective's object id 
-				perspective: 'project',
+				perspective: 'category',
 				viewer: 'master',
 				selectedParentRecordId: selectedParentRecordId,
-				parentRecordType : 'user',
+				parentRecordType : 'project',
 				companyView : false,
 				focusDate :  Ext.Date.format( chart.currentFocusDate, 'Y-m-d H:i:s'),
 		};

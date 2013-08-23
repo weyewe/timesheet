@@ -475,55 +475,39 @@ class Api::WorksController < Api::BaseApiController
   end
   
   def project_reports
-    puts "inside project reports"
-    view_value = params[:viewValue].to_i  
-    date = parse_datetime_from_client_booking( params[:focusDate])
-    date =   DateTime.new( date.year , 
-                              date.month, 
-                              date.day, 
-                              0, 
-                              0, 
-                              0,
-                  Rational( UTC_OFFSET , 24) )
-                  
+    prepare_params
     
-     
-    
-    records = [] 
+    starting_date = @starting_date
+    ending_date = @ending_date
     works = []
-    current_user_id = current_user.id
-    
-    if params[:selectedRecordId].present? and params[:selectedRecordId].to_i != 0 
-      current_user_id  = params[:selectedRecordId].to_i
-    end
-    
-    
-    if view_value == VIEW_VALUE[:week]
-      starting_date = date - date.wday.days 
-      ending_date = starting_date + 7.days 
-      works = Work.active_objects.where{
-        (start_datetime.gte starting_date) & 
-        (start_datetime.lt ending_date ) & 
-        (user_id.eq current_user_id )
-      }
-      
-    elsif view_value == VIEW_VALUE[:month]
-      starting_date = date - date.mday.days 
-      
-      days_in_month = Time.days_in_month(date.month, date.year)
-      ending_date = starting_date + days_in_month.days
-   
-      works = Work.active_objects.where{
-        (start_datetime.gte starting_date) & 
-        (start_datetime.lt ending_date ) & 
-        (user_id.eq current_user_id )
-      }
+    if params[:viewer] == 'personal'
+      # personal view 
+      if params[:parentRecordType] == 'user'
+        puts "Inside viewer personal, parentType == user"
+        selectedRecordId = current_user.id
+        works = Work.active_objects.where{
+          (start_datetime.gte starting_date) & 
+          (start_datetime.lt ending_date ) & 
+          (user_id.eq selectedRecordId )
+        }
+        puts "Total works: #{works.count}"
+      end
+    elsif params[:viewer] == 'master'
+      puts "Inside viewer master"
+      if params[:parentRecordType] == 'user'
+        selectedRecordId = params[:selectedParentRecordId]
+        works = Work.active_objects.where{
+          (start_datetime.gte starting_date) & 
+          (start_datetime.lt ending_date ) & 
+          (user_id.eq selectedRecordId )
+        }
+      end
     end
     
     project_id_list = works.collect {|x| x.project_id}.uniq
     
     projects = Project.where(:id => project_id_list)
-    
+    records = []
     projects.each do |project|
       record = {}
       record[:name] = project.title 
@@ -537,7 +521,63 @@ class Api::WorksController < Api::BaseApiController
     render :json => { :records => records , :total => records.count, :success => true }
   end
   
+  
+  
+  
+  
+  
+=begin
+  Build Category Reports 
+=end
   def category_reports
+    
+    prepare_params
+    
+    starting_date = @starting_date
+    ending_date = @ending_date
+    works = []
+    if params[:viewer] == 'personal'
+      # personal view 
+      if params[:parentRecordType] == 'user'
+        puts "Inside viewer personal, parentType == user"
+        selectedRecordId = current_user.id
+        works = Work.active_objects.where{
+          (start_datetime.gte starting_date) & 
+          (start_datetime.lt ending_date ) & 
+          (user_id.eq selectedRecordId )
+        }
+        puts "Total works: #{works.count}"
+      end
+    elsif params[:viewer] == 'master'
+      puts "Inside viewer master"
+      if params[:parentRecordType] == 'user'
+        selectedRecordId = params[:selectedParentRecordId]
+        works = Work.active_objects.where{
+          (start_datetime.gte starting_date) & 
+          (start_datetime.lt ending_date ) & 
+          (user_id.eq selectedRecordId )
+        }
+      end
+    end
+    
+    category_id_list = works.collect {|x| x.category_id}.uniq
+    
+    categories = Category.where(:id => category_id_list)
+    
+    records = []
+    categories.each do |category|
+      record = {}
+      record[:name] = category.name 
+      record[:data1] = works.where(:category_id => category.id).sum('duration')
+      record[:id] = category.id 
+      
+      records << record
+    end
+    
+    render :json => { :records => records , :total => records.count, :success => true }
+  end
+  
+  def prepare_params
     view_value = params[:viewValue].to_i  
     date = parse_datetime_from_client_booking( params[:focusDate])
     date =   DateTime.new( date.year , 
@@ -548,51 +588,19 @@ class Api::WorksController < Api::BaseApiController
                               0,
                   Rational( UTC_OFFSET , 24) )
                   
-    records = [] 
-    works = []
-    current_user_id = current_user.id
-    
-    # in the master report 
-    if params[:selectedRecordId].present? and params[:selectedRecordId].to_i != 0 
-      current_user_id  = params[:selectedRecordId].to_i
-    end
-    
+     
+    @starting_date = 0 
+    @ending_date = 0 
     if view_value == VIEW_VALUE[:week]
-      starting_date = date - date.wday.days 
-      ending_date = starting_date + 7.days 
-      works = Work.active_objects.where{
-        (start_datetime.gte starting_date) & 
-        (start_datetime.lt ending_date ) & 
-        (user_id.eq current_user_id )
-      }
+      @starting_date = date - date.wday.days 
+      @ending_date = @starting_date + 7.days  
       
     elsif view_value == VIEW_VALUE[:month]
-      starting_date = date - date.mday.days 
+      @starting_date = date - date.mday.days 
       
       days_in_month = Time.days_in_month(date.month, date.year)
-      ending_date = starting_date + days_in_month.days
-   
-      works = Work.active_objects.where{
-        (start_datetime.gte starting_date) & 
-        (start_datetime.lt ending_date ) & 
-        (user_id.eq current_user_id )
-      }
+      @ending_date = @starting_date + days_in_month.days
     end
-    
-    category_id_list = works.collect {|x| x.category_id}.uniq
-    
-    categories = Category.where(:id => category_id_list)
-    
-    categories.each do |category|
-      record = {}
-      record[:name] = category.name 
-      record[:data1] = works.where(:category_id => category.id).sum('duration')
-      record[:id] = category.id 
-      
-      records << record
-    end
-    
-    
-    render :json => { :records => records , :total => records.count, :success => true }
+     
   end
 end

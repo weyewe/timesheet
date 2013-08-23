@@ -27,7 +27,9 @@ Ext.define('AM.view.ChartInspect', {
 		chartListWrapperXType: "container",
 		worksheetId: '#worksheetPanel',
 		autoChartLoad : true, 
-		selectedRecordId : null, 
+		selectedParentRecordId : null, 
+		parentRecordType : 'user' ,
+		viewer : 'personal', 
 
 /*
 	End of configuration 
@@ -90,7 +92,7 @@ Ext.define('AM.view.ChartInspect', {
 							itemmousedown : function(obj) { 
 								 
 								me.fireEvent('seriesClicked',  obj,  me.currentViewType  , me );
-								console.log("ChartInspect: The series is clicked");
+								// console.log("ChartInspect: The series is clicked");
 							}
 						}
         }]
@@ -117,7 +119,9 @@ Ext.define('AM.view.ChartInspect', {
 				params: {
 					viewValue : viewValue,
 					focusDate :  Ext.Date.format( date, 'Y-m-d H:i:s'),
-					selectedRecordId: me.selectedRecordId 
+					selectedParentRecordId: me.selectedParentRecordId ,
+					parentRecordType: me.parentRecordType,
+					viewer : me.viewer 
 				},
 				callback : function(records, options, success){
 					me.setLoading(false);

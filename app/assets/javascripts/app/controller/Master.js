@@ -151,6 +151,32 @@ Ext.define("AM.controller.Master", {
 		]
 		
 	},
+	
+	projectReportFolder : {
+		text:'Project Report', 
+    viewClass:'Will', 
+    iconCls:'text-folder', 
+    expanded: true,
+		children : [
+	 
+	 
+			{ 
+          text:'By Category', 
+          viewClass:'AM.view.master.report.project.WorkCategory', 
+          leaf:true, 
+          iconCls:'text' ,
+					conditions : [
+						{
+							controller : 'works',
+							action : 'reports'
+						}
+						
+					]
+      },
+			
+		]
+		
+	},
 	 
 	onActiveProtectedContent: function( panel, options) {
 		var me  = this; 
@@ -160,7 +186,8 @@ Ext.define("AM.controller.Master", {
 		me.folderList = [
 			this.managementFolder,
 			this.inventoryFolder,
-			this.reportFolder
+			this.reportFolder,
+			this.projectReportFolder
 		];
 		
 		var processList = panel.down('masterProcessList');

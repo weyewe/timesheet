@@ -53,6 +53,7 @@ end
 
 group :development, :test do
   gem 'rspec-rails', '~> 2.0'
+  gem 'puma'
 end
 
 # Use ActiveModel has_secure_password

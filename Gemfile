@@ -42,8 +42,13 @@ gem 'the_role', '~> 2.0.0'
 gem 'protected_attributes'
 gem 'squeel', :git => "git://github.com/ernie/squeel.git"
  
-gem 'rails_12factor', group: :production
- 
+
+group :production do
+  gem 'rails_12factor'
+end
+
+# gem 'rails_log_stdout',           github: 'Heroku/rails_log_stdout'
+# gem 'rails3_serve_static_assets', github: 'Heroku/rails3_serve_static_assets'
 
 group :development, :test do
   gem 'rspec-rails', '~> 2.0'

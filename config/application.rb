@@ -28,6 +28,7 @@ module Timesheet
     "fontawesome-webfont.woff")
 
 
+    config.assets.initialize_on_precompile = false
 
     config.assets.precompile << Proc.new do |path|
       if path =~ /\.(css|js)\z/

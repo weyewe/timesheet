@@ -137,11 +137,14 @@ Ext.define('AM.controller.MasterEmployeeWorkCategoryReports', {
 		var viewport = this.getViewport();
 		
 		list.store.getProxy().extraParams = {
-		    viewValue : viewValue,
-				selectedRecordId: result.items[0].get('id'),
+		    viewValue : viewValue,  // for the date 
+				selectedRecordId: result.items[0].get('id'), // for the perspective's object id 
 				perspective: 'category',
 				viewer: 'master',
-				selectedParentRecordId: selectedParentRecordId
+				selectedParentRecordId: selectedParentRecordId,
+				parentRecordType : 'user',
+				companyView : false,
+				focusDate :  Ext.Date.format( chart.currentFocusDate, 'Y-m-d H:i:s'),
 		};
 		
 		

@@ -93,7 +93,8 @@ Ext.define('AM.controller.WorkProjectReports', {
 		    viewValue : viewValue,
 				selectedRecordId: result.items[0].get('id'),
 				perspective: 'project',
-				viewer: 'personal'
+				viewer: 'personal',
+				focusDate :  Ext.Date.format( chart.currentFocusDate, 'Y-m-d H:i:s'),
 		};
 		
 		

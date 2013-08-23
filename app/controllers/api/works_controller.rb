@@ -24,6 +24,8 @@ class Api::WorksController < Api::BaseApiController
       3. selectedRecordId 
       4. perspective 'project' or 'category' or 'user'  (x-axis on the chart)
       5. companyView => true or false.. use the perspective to give constraint. 
+          ( we don't need to select the parent Record ID )
+          # default as false 
       
       By Project
         Select a user to view his time spent ( on which project)
@@ -35,6 +37,10 @@ class Api::WorksController < Api::BaseApiController
     PROJECT REPORT
       By User
         Select a project to view the details
+        1. On parent record click: set the selectedParentRecordId to the chart's load   
+        2. On chart series' click: set the selectedParentRecordId to the list's store extra params. 
+                                   set the selectedRecordId to the list's store 
+                                   set the perspective to the list's store  => embed proxy.extraParams 
         Select a user to view the works 
       By Category 
         Select a project to view the details 
@@ -53,9 +59,12 @@ class Api::WorksController < Api::BaseApiController
     elsif params[:selectedRecordId].present? and params[:viewer] == 'personal'
       build_personal_report_results # current_user scope 
     elsif params[:selectedRecordId].present? and params[:viewer] == 'master'
-      # on behalf of the employee.
-      # it requires the params selectedParentRecordId
-      build_master_report_results  # whole company scope 
+      if params[:companyView].present? and params[:companyView] == 'true'
+        build_master_report_company_perspective_results 
+      else
+        build_master_report_results 
+      end
+      
       
       # what if we want on behalf of project? the selectedParentRecord == project? 
     else
@@ -97,6 +106,8 @@ class Api::WorksController < Api::BaseApiController
       build_master_project_details
     elsif params[:perspective] == 'category'
       build_master_category_details
+    elsif params[:perspective] == 'user'
+      build_master_user_details
     end
   end
   
@@ -104,47 +115,150 @@ class Api::WorksController < Api::BaseApiController
   
   # parentPerspective = user 
   def build_master_project_details
+    # 1. selectedParentRecordId  => user_id 
+    # 2. parentRecordType => 'project' or 'user' or 'category'
+    # 3. selectedRecordId
+    
     project = Project.where(:id => params[:selectedRecordId]).first 
     if project.nil?
       @objects  = [] 
       @total = 0 
     else
-      @objects = Work.active_objects.where(:user_id => current_user.id, 
-              :project_id =>  project.id).
-              joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
-              
-      @total =         Work.active_objects.where(:user_id => current_user.id, 
-                      :project_id =>  project.id).count
+      
+      if params[:parentRecordType] == 'user'
+        @objects = Work.active_objects.where(:user_id => params[:selectedParentRecordId], 
+                :project_id =>  project.id).
+                joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
+
+        @total =         Work.active_objects.where(:user_id => params[:selectedParentRecordId], 
+                        :project_id =>  project.id).count
+      end
+      
+      
     end
   end
   
-  def build_personal_project_details
-    project = Project.where(:id => params[:selectedRecordId]).first 
-    if project.nil?
-      @objects  = [] 
-      @total = 0 
-    else
-      @objects = Work.active_objects.where(:user_id => current_user.id, 
-              :project_id =>  project.id).
-              joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
-              
-      @total =         Work.active_objects.where(:user_id => current_user.id, 
-                      :project_id =>  project.id).count
-    end
-  end
-  
-  def build_personal_category_details
+  # parentPerspective = user 
+  def build_master_category_details
     category = Category.where(:id => params[:selectedRecordId]).first 
     if category.nil?
       @objects  = [] 
       @total = 0 
     else
-      @objects = Work.active_objects.where(:user_id => current_user.id, 
-              :category_id =>  category.id).
-              joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
-              
-      @total =         Work.active_objects.where(:user_id => current_user.id, 
-                      :category_id =>  category.id).count
+      
+      
+      
+      if params[:parentRecordType] == 'user'
+        @objects = Work.active_objects.where(:user_id => params[:selectedParentRecordId], 
+                :category_id =>  category.id).
+                joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
+
+        @total =         Work.active_objects.where(:user_id => params[:selectedParentRecordId], 
+                        :category_id =>  category.id).count
+      end
+      
+      
+    end
+  end
+  
+  def build_personal_project_details
+    
+    view_value = params[:viewValue].to_i  
+    date = parse_datetime_from_client_booking( params[:focusDate])
+    date =   DateTime.new( date.year , 
+                              date.month, 
+                              date.day, 
+                              0, 
+                              0, 
+                              0,
+                  Rational( UTC_OFFSET , 24) )
+    
+    
+    
+                  
+    project = Project.where(:id => params[:selectedRecordId]).first 
+    if project.nil?
+      @objects  = [] 
+      @total = 0 
+    else
+      starting_date = 0 
+      ending_date = 0 
+      
+      if view_value == VIEW_VALUE[:week]
+        starting_date = date - date.wday.days 
+        ending_date = starting_date + 7.days  
+      elsif view_value == VIEW_VALUE[:month]
+        starting_date = date - date.mday.days 
+        days_in_month = Time.days_in_month(date.month, date.year)
+        ending_date = starting_date + days_in_month.days
+      end
+      
+      current_user_id = current_user.id 
+      @objects  =        Work.active_objects.where{
+        (start_datetime.gte starting_date) & 
+        (start_datetime.lt ending_date ) & 
+        (user_id.eq current_user_id ) & 
+        (project_id.eq project.id )
+      }.joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
+
+    
+      @total =                   Work.active_objects.where{
+        (start_datetime.gte starting_date) & 
+        (start_datetime.lt ending_date ) & 
+        (user_id.eq current_user_id ) & 
+        (project_id.eq project.id )
+        }.count
+      
+    end
+  end
+  
+  def build_personal_category_details
+    view_value = params[:viewValue].to_i  
+    date = parse_datetime_from_client_booking( params[:focusDate])
+    date =   DateTime.new( date.year , 
+                              date.month, 
+                              date.day, 
+                              0, 
+                              0, 
+                              0,
+                  Rational( UTC_OFFSET , 24) )
+    
+    
+    
+                  
+    category = Category.where(:id => params[:selectedRecordId]).first 
+    if category.nil?
+      @objects  = [] 
+      @total = 0 
+    else
+      starting_date = 0 
+      ending_date = 0 
+      
+      if view_value == VIEW_VALUE[:week]
+        starting_date = date - date.wday.days 
+        ending_date = starting_date + 7.days  
+      elsif view_value == VIEW_VALUE[:month]
+        starting_date = date - date.mday.days 
+        days_in_month = Time.days_in_month(date.month, date.year)
+        ending_date = starting_date + days_in_month.days
+      end
+      
+      current_user_id = current_user.id 
+      @objects  =        Work.active_objects.where{
+        (start_datetime.gte starting_date) & 
+        (start_datetime.lt ending_date ) & 
+        (user_id.eq current_user_id ) & 
+        (category_id.eq category.id )
+      }.joins(:project, :category).page(params[:page]).per(params[:limit]).order("id DESC")
+
+    
+      @total =                   Work.active_objects.where{
+        (start_datetime.gte starting_date) & 
+        (start_datetime.lt ending_date ) & 
+        (user_id.eq current_user_id ) & 
+        (category_id.eq category.id )
+        }.count
+      
     end
   end
 

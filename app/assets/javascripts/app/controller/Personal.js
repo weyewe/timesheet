@@ -60,7 +60,7 @@ Ext.define("AM.controller.Personal", {
 					conditions : [
 						{
 							controller : 'works',
-							action : 'reports'
+							action : 'project_reports'
 						}
 					]
       },
@@ -73,7 +73,7 @@ Ext.define("AM.controller.Personal", {
 					conditions : [
 						{
 							controller : 'works',
-							action : 'reports'
+							action : 'category_reports'
 						}
 					]
       }

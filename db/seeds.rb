@@ -20,7 +20,9 @@ role = {
     :create => true,
     :update => true,
     :destroy => true,
-    :work_reports => true 
+    :work_reports => true ,
+    :project_reports => true ,
+    :category_reports => true 
   },
   :projects => {
     :search => true 

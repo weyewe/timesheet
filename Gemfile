@@ -38,6 +38,7 @@ gem 'devise'
 gem "kaminari"  
 gem 'uuidtools'
 
+gem 'bootstrap-sass', '~> 2.3.1.0'
 gem 'the_role', '~> 2.0.0'
 gem 'protected_attributes'
 gem 'squeel', :git => "git://github.com/ernie/squeel.git"

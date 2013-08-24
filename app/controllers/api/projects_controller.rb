@@ -38,16 +38,21 @@ class Api::ProjectsController < Api::BaseApiController
     
     if @object.errors.size == 0 
       render :json => { :success => true, 
-                        :projects => [@object] , 
+                        :projects => [{
+                          :id 						=>		@object.id ,
+                        	:title =>			@object.title   ,
+                        	:customer_id 	=>		@object.customer.id   ,
+                        	:customer_name 		=>		@object.customer.name,
+                        	:deadline_date	=>			format_date_friendly(@object.deadline_date)  ,
+                        	:description     =>   @object.description  
+                        }],
+                         
                         :total => Project.active_objects.count }  
     else
       msg = {
         :success => false, 
         :message => {
           :errors => extjs_error_format( @object.errors ) 
-          # :errors => {
-          #   :name => "Nama tidak boleh bombastic"
-          # }
         }
       }
       

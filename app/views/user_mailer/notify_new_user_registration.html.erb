@@ -46,6 +46,21 @@
  
     <!-- Example row of columns -->
     <div class="row">
+	
+			
+				
+				<% if @user.role.name == ROLE_NAME[:admin] %>
+					<p>
+						Untuk petunjuk penggunaan dengan role <b>Admin</b>, silakan lihat di:
+						<a href='https://docs.google.com/presentation/d/1FXpn7OqB0DZRGPo7QTSPY_kI4OiAWqJQcNxOJkUKMts/edit?usp=sharing'>
+							Admin User Guide</a>
+					</p>
+				<% end %>
+				
+			<p>
+				Download Petunjuk penggunaan <b>Data Entry</b> di: 
+				<a>Data Entry User Guide</a>
+			</p>
       
       <table cellpadding="0" cellspacing="0" border="0" 
             class="table table-striped table-bordered" id="example">
@@ -67,6 +82,8 @@
         </tbody>
       </table>
       
+
+			
     
       
     </div>

@@ -111,6 +111,10 @@ class Api::CategoriesController < Api::BaseApiController
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
+                        
+      @total =                   Category.where{ (name =~ query)   & 
+                                                  (is_deleted.eq false )
+                                                }.count
     else
       @objects = Category.where{ (id.eq selected_id)  & 
                                 (is_deleted.eq false )
@@ -118,9 +122,14 @@ class Api::CategoriesController < Api::BaseApiController
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
+                        
+      @total =     Category.where{ (id.eq selected_id)  & 
+                                    (is_deleted.eq false )
+                                  }.count
     end
     
     
-    render :json => { :records => @objects , :total => @objects.count, :success => true }
+    
+    render :json => { :records => @objects , :total => @total, :success => true }
   end
 end

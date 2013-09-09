@@ -111,6 +111,10 @@ class Api::CustomersController < Api::BaseApiController
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
+                        
+      @total = Customer.where{ (name =~ query)   & 
+                                (is_deleted.eq false )
+                              }.count
     else
       @objects = Customer.where{ (id.eq selected_id)  & 
                                 (is_deleted.eq false )
@@ -118,9 +122,13 @@ class Api::CustomersController < Api::BaseApiController
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
+   
+      @objects = Customer.where{ (id.eq selected_id)  & 
+                                (is_deleted.eq false )
+                              }.count 
     end
     
     
-    render :json => { :records => @objects , :total => @objects.count, :success => true }
+    render :json => { :records => @objects , :total => @total, :success => true }
   end
 end

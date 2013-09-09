@@ -458,6 +458,11 @@ class Api::WorksController < Api::BaseApiController
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
+   
+      @total = Work.where{ (title =~ query)   & 
+                                (is_deleted.eq false ) & 
+                                (user_id.eq current_user.id )
+                              }.count
     else
       @objects = Work.where{ (id.eq selected_id)  & 
                                 (is_deleted.eq false ) & 
@@ -466,9 +471,14 @@ class Api::WorksController < Api::BaseApiController
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
+   
+      @total =   Work.where{ (id.eq selected_id)  & 
+                                  (is_deleted.eq false ) & 
+                                  (user_id.eq current_user.id )
+                                }.count
     end
     
-    render :json => { :records => @objects , :total => @objects.count, :success => true }
+    render :json => { :records => @objects , :total => @total, :success => true }
   end
   
   def reports

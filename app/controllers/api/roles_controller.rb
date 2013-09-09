@@ -17,15 +17,24 @@ class Api::RolesController < Api::BaseApiController
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
+                        
+                        
+     @total =   @objects = Role.where{  (name =~ query)  
+                              }.count
+                              
     else
       @objects = Role.where{ (id.eq selected_id)  
                               }.
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
+    
+      @total = Role.where{ (id.eq selected_id)  
+                              }.count
+    
     end
     
     
-    render :json => { :records => @objects , :total => @objects.count, :success => true }
+    render :json => { :records => @objects , :total => @total, :success => true }
   end
 end

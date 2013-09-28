@@ -7,7 +7,20 @@ I made a timesheet tracker to track the time spent on the project and work categ
 
 2. Internal Use: to understand how the time is spent (what kind of work category) in finishing the project.
 
+#### Example Report generated: 
+
+1. In a given project, __who__ wasted resources within the specified time period
+
+![employee_report_by_project](https://s3.amazonaws.com/weyewe-post-asset/timesheet/employee_report_by_project.png)
+2. In a given project, __what kind of activities__ are using our resources within the specified time period
+
+![employee_report_by_project](https://s3.amazonaws.com/weyewe-post-asset/timesheet/employee_report_by_category.png)
+
+
+
 For the detailed use case, check [this out](http://weyewe.com/rails-extjs-timesheet-tracker).
+
+Check out the [demo](http://teamsheet.herokuapp.com) as well! 
 
 ## App Design
 
@@ -47,7 +60,10 @@ There are 2 roles: __admin__ and __data entry__. Data entry can only log in to t
 6. Setup the database 
 `heroku run rake db:migrate`
 
-7. Setup the seed data: will create example projects, work log, user (admin@gmail.com) and (data_entry1@gmail.com). Password for both of them: __willy1234__ . 
+7. Add sendgrid to send out emails
+`heroku addons:add sendgrid:starter`
+
+8. Setup the seed data: will create example projects, work log, user (admin@gmail.com) and (data_entry1@gmail.com). Password for both of them: __willy1234__ . 
 `heroku run rake db:seed`
 
 

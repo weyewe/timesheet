@@ -29,31 +29,24 @@ There are 2 roles: __admin__ and __data entry__. Data entry can only log in to t
 ## Deployment @Heroku: 
 
 1. clone the __TeamSheet__ code 
-
 `git clone https://github.com/weyewe/timesheet`
 
 2. install the gem 
-
 ` bundle install`
 
 3. Create heroku app
-
 `$ heroku create --stack cedar`
 
 4. Enable asset compilation @ heroku 
-
 `heroku labs:enable user-env-compile`
 
 5. Push the code to heroku 
-
 `git push heroku master`
 
 6. Setup the database 
-
 `heroku run rake db:migrate`
 
 7. Setup the seed data: will create example projects, work log, user (admin@gmail.com) and (data_entry1@gmail.com)
-
 `heroku run rake db:seed`
 
 

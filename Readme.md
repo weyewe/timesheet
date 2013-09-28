@@ -7,6 +7,7 @@ I made a timesheet tracker to track the time spent on the project and work categ
 
 2. Internal Use: to understand how the time is spent (what kind of work category) in finishing the project.
 
+For the detailed use case, check [this out](http://weyewe.com/rails-extjs-timesheet-tracker).
 
 ## App Design
 

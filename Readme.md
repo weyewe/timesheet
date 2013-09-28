@@ -46,7 +46,7 @@ There are 2 roles: __admin__ and __data entry__. Data entry can only log in to t
 6. Setup the database 
 `heroku run rake db:migrate`
 
-7. Setup the seed data: will create example projects, work log, user (admin@gmail.com) and (data_entry1@gmail.com)
+7. Setup the seed data: will create example projects, work log, user (admin@gmail.com) and (data_entry1@gmail.com). Password for both of them: willy1234
 `heroku run rake db:seed`
 
 
